@@ -4,6 +4,12 @@ docker-compose up -d
 docker exec -it mysql-db /bin/bash
 mysql -u root -proot tw < /docker-entrypoint-initdb.d/l1jdb_Taiwan.sql
 
+mysql -uroot -proot
+ALTER USER 'root'@'%' IDENTIFIED BY '[NEW_PASSWORD]';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '[NEW_PASSWORD]';
+FLUSH PRIVILEGES;
+EXIT;
+
 ```
 
 編譯
