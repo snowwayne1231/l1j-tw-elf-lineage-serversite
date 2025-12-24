@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # 1. MySQL 資料庫服務 (l1j-db)
+  mysql-db:
+    image: mysql:5.7 # L1J 推薦版本
+    container_name: mysql-db
+    environment:
+      # ** 確保這個密碼與 database.properties 檔案中的密碼一致 **
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tw
+      TZ: Asia/Taipei
+      # 確保 MySQL 允許所有 IP 連接
+      MYSQL_ROOT_HOST: '%'
+      # [新增] 強制所有連接使用 UTF-8
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+    # [修改] 添加 MySQL 命令參數強制使用 UTF-8
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+      --skip-character-set-client-handshake
+      --init-connect='SET NAMES utf8mb4'
+      --innodb_file_format=Barracuda
+      --innodb_file_per_table=1
+      --innodb_large_prefix=1
+    ports:
+      - "3306:3306"
+    volumes:
+      # [核心步驟] 1. 資料持久化
+      - db_data:/var/lib/mysql
+      # [核心步驟] 2. 資料庫初始化腳本
+      - ./L1J-TW_3.80c/db/l1jdb_Taiwan.sql:/docker-entrypoint-initdb.d/l1jdb_Taiwan.sql
+      # [新增] MySQL 配置文件，確保網絡連接正常
+      - ./mysql-config/my.cnf:/etc/mysql/conf.d/custom.cnf
+    restart: always
+    # [新增] 確保 MySQL 使用自定義網絡
+    networks:
+      - l1j-network
+
+  # 2. L1J 遊戲伺服器服務 (l1j-server)
+  l1j-server:
+    image: amazoncorretto:8-alpine-jdk
+    container_name: l1j-server
+    # 確保資料庫容器啟動，但不保證 DB 服務完成初始化
+    cap_add:
+      - SYS_TIME
+    depends_on:
+      mysql-db:
+        condition: service_started
+    ports:
+      - "2000:2000"
+    volumes:
+      # 掛載您的 L1J 檔案
+      - ./L1J-TW_3.80C:/app
+    working_dir: /app
+    environment:
+      # [新增] 網絡相關環境變數，確保 Java 程序能連接 MySQL
+      MYSQL_HOST: mysql-db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: tw
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      # [新增] Java 網絡配置
+      JAVA_OPTS: "-Djava.net.preferIPv4Stack=true -Djava.awt.headless=true"
+      # libfaketime 設定 - 減去10年（約3650天）
+      LD_PRELOAD: /usr/lib/faketime/libfaketime.so.1
+      FAKETIME: "-3650d"
+    # command: "apk add --no-cache libfaketime"  # 安裝 libfaketime
+    command: ["tail", "-f", "/dev/null"]
+    # 確保容器重啟後仍然保持運行狀態
+    restart: unless-stopped
+    # [新增] 確保 L1J 服務器使用自定義網絡
+    networks:
+      - l1j-network
+
+  # 3. Nginx 靜態網頁服務
+  nginx-web:
+    image: nginx:alpine
+    container_name: nginx-web
+    ports:
+      - "80:80"
+    volumes:
+      - ./website:/usr/share/nginx/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
+    networks:
+      - l1j-network
+    
+# [新增] 自定義網絡定義，確保容器間通信
+networks:
+  l1j-network:
+    driver: bridge
+
+# 卷 (Volumes) 定義
+volumes:
+  db_data: # 用於 MySQL 資料持久化

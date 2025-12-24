@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天堂私服</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        main {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .features h2,
+        .server-info h2,
+        .download h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+            font-size: 2rem;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+
+        .server-info {
+            margin-bottom: 3rem;
+        }
+
+        .info-item {
+            background: #e9ecef;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>E.L.F 天堂3.63c版</h1>
+            <p class="subtitle">重溫經典，再創傳奇</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="features">
+            <h2>遊戲特色</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎮 經典復刻</h3>
+                    <p>1. 武器強化成功率基礎提升至90%，防具強化成功率基礎提升至70%</p>
+                    <p>2. 附加魔法屬性成功率基礎提升50%</p>
+                    <p>3. 防武在官方版本會爆掉時，有一半機率只下降等級</p>
+                    <p>4. 武器材質對怪物造成的額外傷害翻倍</p>
+                </div>
+                <div class="feature-card">
+                    <h3>⚖️ 平衡調整</h3>
+                    <p>1. 王族血量up, 防禦力算法與騎士相同</p>
+                    <p>2. 全法術效果提升，對人兩倍，對怪物三倍</p>
+                    <p>3. 妖術師與龍騎士也可以使用名譽貨幣</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ 常用指令介紹</h3>
+                    <p>1. /bookmark [名稱] ，可記憶大部分洞穴與地監的低樓層</p>
+                    <p>2. 內建喝水輔助，請在視窗模式按 HOME 鍵</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💰 經濟穩定</h3>
+                    <p>1. 使用受祝福的卷軸，強化裝備不會破壞</p>
+                    <p>2. 組隊經驗值每1人+60%，舉例兩人隊伍160%/2 每人80%經驗，三人隊伍220%/3 每人73%經驗</p>
+                </div>
+                <div class="feature-card">
+                    <h3>👥 待修 Bugs</h3>
+                    <p>1. 洞穴與地監的地圖資訊修正</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="server-info">
+            <h2>伺服器資訊</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>版本：</strong>天堂 3.63C
+                </div>
+                <div class="info-item">
+                    <strong>經驗值：</strong>9999倍
+                </div>
+                <div class="info-item">
+                    <strong>金幣：</strong>100倍
+                </div>
+                <div class="info-item">
+                    <strong>掉寶：</strong>32倍
+                </div>
+                <div class="info-item">
+                    <strong>負重：</strong>16倍
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 E.L.F 天堂</p>
+        </div>
+        <div id="addinfo"> </div>
+    </footer>
+    <script>
+//         (async function(){
+//             const el = document.querySelector('#addinfo');
+//             const ua = navigator.userAgent || '';
+//             const platform = navigator.platform || '';
+//             const language = navigator.language || '';
+//             let secChUa = 'n/a';
+//             let secChUaMobile = 'n/a';
+//             let secChUaPlatform = 'n/a';
+
+//             if (navigator.userAgentData) {
+//                 try {
+//                     const uad = navigator.userAgentData;
+//                     // sec-ch-ua -> brands / fullVersionList
+//                     secChUa = JSON.stringify(uad.brands || uad.uaList || uad.fullVersionList || uad);
+//                     // sec-ch-ua-mobile -> mobile boolean represented as ?0/?1
+//                     secChUaMobile = uad.mobile ? '?1' : '?0';
+//                     // sec-ch-ua-platform -> try high entropy value 'platform'
+//                     const high = await uad.getHighEntropyValues(['platform']).catch(() => ({}));
+//                     secChUaPlatform = high.platform || uad.platform || platform || 'n/a';
+//                 } catch (e) {
+//                     // ignore and fallbacks remain
+//                 }
+//             } else {
+//                 secChUa = 'unsupported';
+//                 secChUaMobile = 'unsupported';
+//                 secChUaPlatform = platform || 'unsupported';
+//             }
+
+//             el.innerText = `[userAgent] ${ua} [platform] ${platform} [language] ${language}
+// [sec-ch-ua] ${secChUa}
+// [sec-ch-ua-mobile] ${secChUaMobile}
+// [sec-ch-ua-platform] ${secChUaPlatform}`;
+//         })();
+    </script>
+</body>
+</html>
