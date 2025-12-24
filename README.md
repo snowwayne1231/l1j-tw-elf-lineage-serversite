@@ -10,6 +10,10 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '[NEW_PASSWORD]';
 FLUSH PRIVILEGES;
 EXIT;
 
+vi .\l1jserver\config\server.properties
+Password=[NEW_PASSWORD]
+:wq
+
 ```
 
 編譯
@@ -24,7 +28,7 @@ sh compile.sh
 ```shell
 docker exec -it l1j-server /bin/sh
 cd /app 
-sh StartServer.sh
+sh ServerStart.sh
 
 ```
 
