@@ -31,7 +31,7 @@ services:
       # [核心步驟] 1. 資料持久化
       - db_data:/var/lib/mysql
       # [核心步驟] 2. 資料庫初始化腳本
-      - ./L1J-TW_3.80c/db/l1jdb_Taiwan.sql:/docker-entrypoint-initdb.d/l1jdb_Taiwan.sql
+      - ./l1jserver/db/l1jdb_Taiwan.sql:/docker-entrypoint-initdb.d/l1jdb_Taiwan.sql
       # [新增] MySQL 配置文件，確保網絡連接正常
       - ./mysql-config/my.cnf:/etc/mysql/conf.d/custom.cnf
     restart: always
@@ -53,7 +53,7 @@ services:
       - "2000:2000"
     volumes:
       # 掛載您的 L1J 檔案
-      - ./L1J-TW_3.80C:/app
+      - ./l1jserver:/app
     working_dir: /app
     environment:
       # [新增] 網絡相關環境變數，確保 Java 程序能連接 MySQL
