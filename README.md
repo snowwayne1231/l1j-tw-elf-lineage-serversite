@@ -34,6 +34,10 @@ sh ServerStart.sh
 or
 
 docker exec -it -w /app l1j-server sh ServerStart.sh
+
+or
+
+docker exec -d l1j-server sh -c "cd /app && sh ServerStart.sh"
 ```
 
 
