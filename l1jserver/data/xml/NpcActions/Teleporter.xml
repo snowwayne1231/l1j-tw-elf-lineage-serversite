@@ -35,8 +35,12 @@
 	<Action Name="teleport island-gludin" NpcId="50015">
 		<Teleport X="32608" Y="32734" Map="4" Heading="5" Price="1500" />
 	</Action>
+	<Action Name="teleport island-silver" NpcId="50015">
+		<Teleport X="33080" Y="33386" Map="4" Heading="5" Price="1500" />
+	</Action>
 	<!--顯示金額-->
 	<ShowHtml Name="teleportURL" HtmlId="teleisland2" NpcId="50015">
+		<Data Value="1500" />
 		<Data Value="1500" />
 	</ShowHtml>
 

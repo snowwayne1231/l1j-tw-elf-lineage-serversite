@@ -183,7 +183,7 @@ public class CalcExp {
 				double pri_bonus = 0;
 				L1PcInstance leader = l1pcinstance.getParty().getLeader();
 				if (leader.isCrown() && (l1pcinstance.knownsObject(leader) || l1pcinstance.equals(leader))) {
-					pri_bonus = 0.6;
+					pri_bonus = 1; // 王 特別加成
 				}
 
 				// PT経験値の計算
@@ -194,7 +194,7 @@ public class CalcExp {
 						party_level += each.getLevel() * each.getLevel();
 					}
 					if (l1pcinstance.knownsObject(each)) {
-						pt_bonus += 0.5;
+						pt_bonus += 0.9;
 					}
 				}
 

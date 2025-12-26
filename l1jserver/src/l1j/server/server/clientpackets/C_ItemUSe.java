@@ -1210,7 +1210,9 @@ public class C_ItemUSe extends ClientBasePacket {
 				else if (((itemId >= 40373) && (itemId <= 40382 // 地図各種
 						))
 						|| ((itemId >= 40385) && (itemId <= 40390))) {
-					pc.sendPackets(new S_UseMap(pc, l1iteminstance.getId(), l1iteminstance.getItem().getItemId()));
+					// pc.sendPackets(new S_UseMap(pc, l1iteminstance.getId(), l1iteminstance.getItem().getItemId()));
+					pc.getInventory().removeItem(l1iteminstance, 1);
+					pc.sendPackets(new S_ServerMessage(79)); // \f1沒有任何事情發生。
 				}
 				else if ((itemId == 40310) || (itemId == 40730) || (itemId == 40731) || (itemId == 40732)) { // 便箋(未使用)
 					if (writeLetter(itemId, pc, letterCode, letterReceiver, letterText)) {
