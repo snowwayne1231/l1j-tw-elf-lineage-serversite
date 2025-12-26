@@ -10,6 +10,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '[NEW_PASSWORD]';
 FLUSH PRIVILEGES;
 EXIT;
 
+cp .\l1jserver\config\server_example.properties .\l1jserver\config\server.properties
 vi .\l1jserver\config\server.properties
 Password=[NEW_PASSWORD]
 :wq
