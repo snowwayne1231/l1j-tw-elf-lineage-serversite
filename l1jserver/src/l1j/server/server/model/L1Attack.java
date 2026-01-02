@@ -798,6 +798,8 @@ public class L1Attack {
 
 		weaponDamage +=  _weaponAddDmg + _weaponEnchant ; // 加上武器(額外點數+祝福魔法武器)跟武卷數
 
+		weaponDamage += calcAttrEnchantDmg(); // 属性強化傷害
+
 		if (_calcType == PC_NPC)
 			weaponDamage += calcMaterialBlessDmg(); // 銀祝福武器加傷害
 		if (_weaponType == 54) {
@@ -807,10 +809,9 @@ public class L1Attack {
 				_effectId = 4;
 			}
 		}
-		weaponDamage += calcAttrEnchantDmg(); // 属性強化傷害
 
 		if (darkElfWeapon && _pc.hasSkillEffect(DOUBLE_BRAKE)) 
-			if ((Random.nextInt(100) + 1) <= 33) 
+			if ((Random.nextInt(100) + 1) <= _weaponDoubleDmgChance) 
 				weaponDamage *= 2;
 
 		return weaponDamage;
@@ -1288,7 +1289,7 @@ public class L1Attack {
 
 	// ●●●● プレイヤーのＡＣによるダメージ軽減 ●●●●
 	private int calcPcDefense() {
-		int ac = Math.max(0, 10 - _targetPc.getAc());
+		int ac = Math.max(0, 10 - _targetPc.getTrueAc());
 		int acDefMax = _targetPc.getClassFeature().getAcDefenseMax(ac);
 		return Random.nextInt(acDefMax + 1);
 	}

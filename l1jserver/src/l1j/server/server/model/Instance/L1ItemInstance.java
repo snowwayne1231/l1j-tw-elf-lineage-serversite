@@ -1255,21 +1255,21 @@ public class L1ItemInstance extends L1Object {
 
 		switch (skillId) {
 		case HOLY_WEAPON:
-			setHolyDmgByMagic(1);
-			setHitByMagic(1);
-			break;
-
-		case ENCHANT_WEAPON:
-			setDmgByMagic(2);
-			break;
-
-		case BLESS_WEAPON:
-			setDmgByMagic(2);
+			setHolyDmgByMagic(2);
 			setHitByMagic(2);
 			break;
 
+		case ENCHANT_WEAPON:
+			setDmgByMagic(4);
+			break;
+
+		case BLESS_WEAPON:
+			setDmgByMagic(4);
+			setHitByMagic(4);
+			break;
+
 		case SHADOW_FANG:
-			setDmgByMagic(5);
+			setDmgByMagic(10);
 			break;
 
 		default:

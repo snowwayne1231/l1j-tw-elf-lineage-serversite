@@ -853,6 +853,9 @@ public class L1Magic {
 		if (charaIntelligence < 1) {
 			charaIntelligence = 1;
 		}
+		if ((_calcType == PC_PC) || (_calcType == PC_NPC)) { // オリジナルINTによる魔法ダメージ
+			magicDamage += _pc.getOriginalMagicDamage();
+		}
 
 		double attrDeffence = calcAttrResistance(l1skills.getAttr());
 
@@ -867,15 +870,12 @@ public class L1Magic {
 		int rnd = Random.nextInt(100) + 1;
 		if ((_calcType == PC_PC) || (_calcType == PC_NPC)) {
 			if (l1skills.getSkillLevel() <= 6) {
-				if (rnd <= (10 + _pc.getOriginalMagicCritical())) {
+				if (rnd <= (10 + _pc.getOriginalMagicCritical() + _pc.getTrueSp())) {
 					magicDamage *= criticalCoefficient;
 				}
 			}
 		}
-
-		if ((_calcType == PC_PC) || (_calcType == PC_NPC)) { // オリジナルINTによる魔法ダメージ
-			magicDamage += _pc.getOriginalMagicDamage();
-		}
+		
 		if ((_calcType == PC_PC) || (_calcType == PC_NPC)) { // アバターによる追加ダメージ
 			if (_pc.hasSkillEffect(ILLUSION_AVATAR)) {
 				magicDamage += 10;
@@ -893,8 +893,8 @@ public class L1Magic {
 		int magicDamage = 0;
 
 		int magicBonus = getMagicBonus();
-		if (magicBonus > 10) {
-			magicBonus = 10;
+		if (magicBonus > 16) {
+			magicBonus = 16;
 		}
 
 		int diceCount = value + magicBonus;

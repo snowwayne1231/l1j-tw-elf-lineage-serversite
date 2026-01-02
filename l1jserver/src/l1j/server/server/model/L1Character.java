@@ -965,6 +965,10 @@ public class L1Character extends L1Object {
 		setAc(_trueAc + i);
 	}
 
+	public int getTrueAc() {
+		return _trueAc;
+	}
+
 	private byte _str = 0; // ● ＳＴＲ（1～127）
 
 	private short _trueStr = 0; // ● 本当のＳＴＲ
@@ -1508,16 +1512,8 @@ public class L1Character extends L1Object {
 			return 2;
 		} else if (i <= 24) {
 			return i - 15;
-		} else if (i <= 35) {
-			return 10;
-		} else if (i <= 42) {
-			return 11;
-		} else if (i <= 49) {
-			return 12;
-		} else if (i <= 50) {
-			return 13;
 		} else {
-			return i - 25;
+			return 10 + (int) ((i - 24) / 2);
 		}
 	}
 

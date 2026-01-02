@@ -3995,17 +3995,17 @@ public class L1PcInstance extends L1Character {
 	public void resetOriginalMagicCritical() {
 		int originalInt = getOriginalInt();
 		if (isCrown()) {
-			_originalMagicCritical = 0;
+			_originalMagicCritical = 2;
 		}
 		else if (isKnight()) {
 			_originalMagicCritical = 0;
 		}
 		else if (isElf()) {
 			if ((originalInt == 14) || (originalInt == 15)) {
-				_originalMagicCritical = 2;
+				_originalMagicCritical = 3;
 			}
 			else if (originalInt >= 16) {
-				_originalMagicCritical = 4;
+				_originalMagicCritical = 6;
 			}
 			else {
 				_originalMagicCritical = 0;
@@ -4016,16 +4016,16 @@ public class L1PcInstance extends L1Character {
 		}
 		else if (isWizard()) {
 			if (originalInt == 15) {
-				_originalMagicCritical = 2;
-			}
-			else if (originalInt == 16) {
 				_originalMagicCritical = 4;
 			}
-			else if (originalInt == 17) {
+			else if (originalInt == 16) {
 				_originalMagicCritical = 6;
 			}
-			else if (originalInt == 18) {
+			else if (originalInt == 17) {
 				_originalMagicCritical = 8;
+			}
+			else if (originalInt == 18) {
+				_originalMagicCritical = 10;
 			}
 			else {
 				_originalMagicCritical = 0;
@@ -4112,21 +4112,21 @@ public class L1PcInstance extends L1Character {
 		}
 		else if (isWizard()) {
 			if (originalInt >= 13) {
-				_originalMagicDamage = 1;
+				_originalMagicDamage = 2;
 			}
 			else {
-				_originalMagicDamage = 0;
+				_originalMagicDamage = 1;
 			}
 		}
 		else if (isDragonKnight()) {
 			if ((originalInt == 13) || (originalInt == 14)) {
-				_originalMagicDamage = 1;
-			}
-			else if ((originalInt == 15) || (originalInt == 16)) {
 				_originalMagicDamage = 2;
 			}
+			else if ((originalInt == 15) || (originalInt == 16)) {
+				_originalMagicDamage = 4;
+			}
 			else if (originalInt == 17) {
-				_originalMagicDamage = 3;
+				_originalMagicDamage = 6;
 			}
 			else {
 				_originalMagicDamage = 0;
@@ -4134,10 +4134,10 @@ public class L1PcInstance extends L1Character {
 		}
 		else if (isIllusionist()) {
 			if (originalInt == 16) {
-				_originalMagicDamage = 1;
+				_originalMagicDamage = 2;
 			}
 			else if (originalInt == 17) {
-				_originalMagicDamage = 2;
+				_originalMagicDamage = 4;
 			}
 			else {
 				_originalMagicDamage = 0;

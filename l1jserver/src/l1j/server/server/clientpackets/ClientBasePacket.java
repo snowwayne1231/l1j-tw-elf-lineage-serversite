@@ -15,6 +15,9 @@
 package l1j.server.server.clientpackets;
 
 import java.nio.ByteBuffer;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +34,7 @@ public abstract class ClientBasePacket {
 	private int _off;
 
 	public ClientBasePacket(byte abyte0[]) {
-		_log.fine("type=" + getType() + ", len=" + abyte0.length);
+		_log.fine("[ClientBasePacket] [Handle] type= [" + getType() + "], len=" + abyte0.length);
 		_decrypt = abyte0;
 		_off = 1;
 	}

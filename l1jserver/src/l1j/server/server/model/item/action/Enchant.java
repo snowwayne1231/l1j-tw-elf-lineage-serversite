@@ -191,7 +191,7 @@ public class Enchant {
 			}
 			
 			if (timesSafeGap > 2) { // 安定值兩倍
-				enchant_chance_armor = Config.ENCHANT_CHANCE_ARMOR - ((timesSafeGap-2) * 10);
+				enchant_chance_armor = Config.ENCHANT_CHANCE_ARMOR - ((timesSafeGap-2) * 5);
 				if (enchant_chance_armor < 25) {
 					enchant_chance_armor = 25;
 				}
