@@ -436,7 +436,8 @@ public class Opcodes {
 	//public static final int S_OPCODE_SKILLSOUNDGFX = 86; // 產生動畫 [自身]
 	//public static final int S_OPCODE_DISCONNECT = 88; // 立即中斷連線
 	public static final int S_OPCODE_SPECIALATTACK = 89; // 特殊攻擊
-	public static final int S_OPCODE_SPOLY = 908; // 特別變身封包
+	// public static final int S_OPCODE_SPOLY = 908; // 特別變身封包
+	public static final int S_OPCODE_SPOLY = 90; // 特別變身封包
 	//public static final int S_OPCODE_SHOWHTML = 91; // 產生對話視窗
 	//public static final int S_OPCODE_ABILITY = 92; // 配置封包 TODO 傳送戒
 	//public static final int S_OPCODE_DEPOSIT = 938; // 存入資金城堡寶庫
