@@ -720,9 +720,9 @@ public class L1Magic {
 		if (dmg < 0) {
 			dmg = 0;
 		}
-		// 對人法術效果兩倍
-		dmg *= 2;
-
+		// 對人法術效果1.5倍
+		dmg /= 2;
+		dmg *= 3;
 		return dmg;
 	}
 
@@ -813,8 +813,8 @@ public class L1Magic {
 				}
 			}
 		}
-		// 對NPC法術效果三倍
-		dmg *= 3;
+		// 對NPC法術效果2倍
+		dmg *= 2;
 
 		return dmg;
 	}
