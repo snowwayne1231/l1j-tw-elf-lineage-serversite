@@ -194,7 +194,7 @@ public class CalcExp {
 						party_level += each.getLevel() * each.getLevel();
 					}
 					if (l1pcinstance.knownsObject(each)) {
-						pt_bonus += 0.9;
+						pt_bonus += 0.95;
 					}
 				}
 

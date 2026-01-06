@@ -50,8 +50,10 @@ public class C_NPCTalk extends ClientBasePacket {
 		
 		if (obj != null) {
 			L1NpcAction action = NpcActionTable.getInstance().get(pc, obj);
+			_log.fine("NPC對話動作: npcobjid=" + objid + " pc=" + pc.getName());
 			if (action != null) {
 				L1NpcHtml html = action.execute("", pc, obj, new byte[0]);
+				_log.fine("NPC對話動作結果: (" + (html != null ? html : "無HTML") + ")");
 				if (html != null) {
 					pc.sendPackets(new S_NPCTalkReturn(obj.getId(), html));
 				}

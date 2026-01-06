@@ -54,6 +54,7 @@ public class C_NPCTalkAction extends ClientBasePacket {
 		}
 
 		try {
+			_log.finest("[C_NPCTalkAction] npcObjid= " + objectId + " action=" + action + " user=" + activeChar.getName());
 			L1NpcInstance npc = (L1NpcInstance) obj;
 			npc.onFinalAction(activeChar, action);
 		} catch (ClassCastException e) {

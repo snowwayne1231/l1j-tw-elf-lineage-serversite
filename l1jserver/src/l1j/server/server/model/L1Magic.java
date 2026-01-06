@@ -720,9 +720,12 @@ public class L1Magic {
 		if (dmg < 0) {
 			dmg = 0;
 		}
-		// 對人法術效果1.5倍
-		dmg /= 2;
-		dmg *= 3;
+		if (_calcType == PC_PC) {
+			// 對人法術效果1.5倍
+			dmg /= 2;
+			dmg *= 3;
+		}
+		
 		return dmg;
 	}
 
@@ -855,6 +858,7 @@ public class L1Magic {
 		}
 		if ((_calcType == PC_PC) || (_calcType == PC_NPC)) { // オリジナルINTによる魔法ダメージ
 			magicDamage += _pc.getOriginalMagicDamage();
+			magicDamage += Random.nextInt(_pc.getTrueSp());
 		}
 
 		double attrDeffence = calcAttrResistance(l1skills.getAttr());
@@ -869,7 +873,7 @@ public class L1Magic {
 		double criticalCoefficient = 1.5; // 魔法クリティカル
 		int rnd = Random.nextInt(100) + 1;
 		if ((_calcType == PC_PC) || (_calcType == PC_NPC)) {
-			if (l1skills.getSkillLevel() <= 6) {
+			if (l1skills.getSkillLevel() <= 10) {
 				if (rnd <= (10 + _pc.getOriginalMagicCritical() + _pc.getTrueSp())) {
 					magicDamage *= criticalCoefficient;
 				}

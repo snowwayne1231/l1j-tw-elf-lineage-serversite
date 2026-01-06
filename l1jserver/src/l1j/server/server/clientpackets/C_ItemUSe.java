@@ -140,7 +140,7 @@ public class C_ItemUSe extends ClientBasePacket {
 		int itemObjid = readD();
 		
 		L1ItemInstance l1iteminstance = pc.getInventory().getItem(itemObjid);
-
+		
 		if (l1iteminstance == null) {
 			return;
 		}
@@ -160,6 +160,7 @@ public class C_ItemUSe extends ClientBasePacket {
 		int itemId;
 		try {
 			itemId = l1iteminstance.getItem().getItemId();
+			_log.finest("[C_ItemUSe] itemObjid= " + itemObjid + " itemId=" + itemId + " user=" + pc.getName());
 		}
 		catch (Exception e) {
 			return;

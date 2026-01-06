@@ -139,7 +139,7 @@ public class L1WeaponSkill {
 		}
 
 		int chance = Random.nextInt(100) + 1;
-		if (weaponSkill.getProbability() + pc.getWeapon().getEnchantLevel() < chance) {
+		if (weaponSkill.getProbability() + (int) (pc.getWeapon().getEnchantLevel() / 2) < chance) {
 			return 0;
 		}
 
@@ -177,7 +177,7 @@ public class L1WeaponSkill {
 		double damage = 0;
 		int randomDamage = weaponSkill.getRandomDamage();
 		if (randomDamage != 0) {
-			damage = Random.nextInt(randomDamage);
+			damage = Random.nextInt(randomDamage + pc.getWeapon().getEnchantLevel());
 		}
 		damage += weaponSkill.getFixDamage();
 
@@ -264,7 +264,8 @@ public class L1WeaponSkill {
 	public static double getBaphometStaffDamage(L1PcInstance pc, L1Character cha) {
 		double dmg = 0;
 		int chance = Random.nextInt(100) + 1;
-		if (14 + pc.getWeapon().getEnchantLevel() >= chance) {
+		int elevel = pc.getWeapon().getEnchantLevel();
+		if (14 + (elevel == 0 ? 10 : elevel) >= chance) {
 			int locx = cha.getX();
 			int locy = cha.getY();
 			int sp = pc.getSp();
@@ -302,7 +303,7 @@ public class L1WeaponSkill {
 	public static double getKiringkuDamage(L1PcInstance pc, L1Character cha) {
 		int dmg = 0;
 		int dice = 5;
-		int diceCount = 2;
+		int diceCount = 3;
 		int value = 0;
 		int kiringkuDamage = 0;
 		int charaIntelligence = 0;
@@ -315,10 +316,10 @@ public class L1WeaponSkill {
 		for (int i = 0; i < diceCount; i++) {
 			kiringkuDamage += (Random.nextInt(dice) + 1);
 		}
-		kiringkuDamage += value;
+		kiringkuDamage += value + pc.getOriginalMagicDamage();
 
 		int spByItem = pc.getSp() - pc.getTrueSp(); // アイテムによるSP変動
-		charaIntelligence = pc.getInt() + spByItem - 12;
+		charaIntelligence = pc.getInt() + spByItem - 11;
 		if (charaIntelligence < 1) {
 			charaIntelligence = 1;
 		}
@@ -328,8 +329,7 @@ public class L1WeaponSkill {
 
 		double kiringkuFloor = Math.floor(kiringkuDamage);
 
-		dmg += kiringkuFloor + pc.getWeapon().getEnchantLevel()
-				+ pc.getOriginalMagicDamage();
+		dmg += kiringkuFloor + pc.getWeapon().getEnchantLevel() + Random.nextInt(pc.getSp());
 
 		if (pc.hasSkillEffect(ILLUSION_AVATAR)) {
 			dmg += 10;
@@ -349,17 +349,17 @@ public class L1WeaponSkill {
 	public static double getAreaSkillWeaponDamage(L1PcInstance pc,
 			L1Character cha, int weaponId) {
 		double dmg = 0;
-		int probability = 0;
+		int probability = pc.getWeapon().getEnchantLevel();
 		int attr = 0;
 		int chance = Random.nextInt(100) + 1;
 		if (weaponId == 263 || weaponId == 287) { // フリージングランサー
-			probability = 5;
+			probability += probability == 0 ? 15 : 5;
 			attr = L1Skills.ATTR_WATER;
 		} else if (weaponId == 260) { // レイジングウィンド
-			probability = 4;
+			probability += probability == 0 ? 14 : 4;
 			attr = L1Skills.ATTR_WIND;
 		}
-		if (probability + pc.getWeapon().getEnchantLevel() >= chance) {
+		if (probability >= chance) {
 			int sp = pc.getSp();
 			int intel = pc.getInt();
 			int area = 0;

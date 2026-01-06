@@ -874,7 +874,7 @@ public class L1Attack {
 				|| _pc.hasSkillEffect(COOKING_2_0_S)
 				|| _pc.hasSkillEffect(COOKING_3_2_N)
 				|| _pc.hasSkillEffect(COOKING_3_2_S))
-			shortdmg += 1;
+			shortdmg += 2;
 
 		return shortdmg;
 	}

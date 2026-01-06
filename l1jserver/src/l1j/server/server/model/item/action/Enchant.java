@@ -92,13 +92,13 @@ public class Enchant {
 			int enchant_chance_wepon;
 			int timesSafeGap = (enchant_level / safe_enchant) + 1;
 			if (timesSafeGap>4) { // 安定值4倍
-				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap) * 3);
+				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap) * 4);
 				if (enchant_chance_wepon < 25) {
 					enchant_chance_wepon = 25;
 				}
 			}
 			else if (timesSafeGap>2) { // 安定值兩倍
-				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap-2) * 5);
+				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap-1) * 5);
 			}
 			else {
 				enchant_chance_wepon = (50 + enchant_level * Config.ENCHANT_CHANCE_WEAPON) / enchant_level;
