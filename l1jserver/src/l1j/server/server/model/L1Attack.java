@@ -1312,7 +1312,7 @@ public class L1Attack {
 		}
 		if ((_weaponBless == 0)
 				&& ((undead == 1) || (undead == 2) || (undead == 3))) { // 祝福武器、かつ、アンデッド系・悪魔系・アンデッド系ボス
-			damage += Random.nextInt(10) + 10;
+			damage += Random.nextInt(15) + 10;
 		}
 		if ((_pc.getWeapon() != null) && ((undead == 1) || (undead == 3))) {
 			damage += weapon.getHolyDmgByMagic();
@@ -1455,7 +1455,11 @@ public class L1Attack {
 
 	// ■■■■ 底比斯武器攻撃付加 ■■■■
 	public void addChaserAttack() {
-		if (5 > Random.nextInt(100) + 1) {
+		weapon = _pc.getWeapon();
+		if (weapon == null) {
+			return;
+		}
+		if (5 + weapon.getEnchantLevel() > Random.nextInt(100) + 1) {
 			if (_weaponId == 265 || _weaponId == 266 || _weaponId == 267
 					|| _weaponId == 268 || _weaponId == 280 || _weaponId == 281) {
 				L1Chaser chaser = new L1Chaser(_pc, _target,

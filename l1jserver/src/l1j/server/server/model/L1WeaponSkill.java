@@ -139,7 +139,7 @@ public class L1WeaponSkill {
 		}
 
 		int chance = Random.nextInt(100) + 1;
-		if (weaponSkill.getProbability() < chance) {
+		if (weaponSkill.getProbability() + pc.getWeapon().getEnchantLevel() < chance) {
 			return 0;
 		}
 
@@ -264,7 +264,7 @@ public class L1WeaponSkill {
 	public static double getBaphometStaffDamage(L1PcInstance pc, L1Character cha) {
 		double dmg = 0;
 		int chance = Random.nextInt(100) + 1;
-		if (14 >= chance) {
+		if (14 + pc.getWeapon().getEnchantLevel() >= chance) {
 			int locx = cha.getX();
 			int locy = cha.getY();
 			int sp = pc.getSp();
@@ -359,7 +359,7 @@ public class L1WeaponSkill {
 			probability = 4;
 			attr = L1Skills.ATTR_WIND;
 		}
-		if (probability >= chance) {
+		if (probability + pc.getWeapon().getEnchantLevel() >= chance) {
 			int sp = pc.getSp();
 			int intel = pc.getInt();
 			int area = 0;
@@ -449,7 +449,7 @@ public class L1WeaponSkill {
 	public static double getLightningEdgeDamage(L1PcInstance pc, L1Character cha) {
 		double dmg = 0;
 		int chance = Random.nextInt(100) + 1;
-		if (4 >= chance) {
+		if (4 + pc.getWeapon().getEnchantLevel() >= chance) {
 			int sp = pc.getSp();
 			int intel = pc.getInt();
 			double bsk = 0;
