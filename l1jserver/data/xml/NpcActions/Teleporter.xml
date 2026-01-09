@@ -2,6 +2,19 @@
 <NpcActionList>
 	<!--顯示金額對照對話檔內容，因此不能更動順序。-->
 <!--L1J-TW-->
+	<!--時空裂痕-->
+	<Action Name="a" NpcId="96001">
+		<Teleport X="32857" Y="32896" Map="780" Heading="5" Price="0"/>
+	</Action>
+	<Action Name="b" NpcId="96001">
+		<Teleport X="32857" Y="32896" Map="780" Heading="5" Price="0"/>
+	</Action>
+	<Action Name="c" NpcId="96001">
+		<Teleport X="32857" Y="32896" Map="780" Heading="5" Price="0"/>
+	</Action>
+	<Action Name="e" NpcId="95020">
+		<Teleport X="32732" Y="32863" Map="784" Heading="5" Price="0"/>
+	</Action>
 <!--隱藏之谷-->
 	<!--卡連 / 沉默洞穴-->
 	<Action Name="teleport dark island-in" NpcId="71013">

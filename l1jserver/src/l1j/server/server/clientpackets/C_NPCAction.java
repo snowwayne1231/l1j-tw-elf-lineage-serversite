@@ -3404,11 +3404,11 @@ public class C_NPCAction extends ClientBasePacket {
 			}
 			if (pc.getInventory().checkEnchantItem(weapon1, 7, 1)
 					&& pc.getInventory().checkEnchantItem(weapon2, 7, 1)
-					&& pc.getInventory().checkItem(41246, 1000) // 結晶体
+					&& pc.getInventory().checkItem(41246, 30000) // 結晶体
 					&& pc.getInventory().checkItem(49143, 10)) { // 勇気の結晶
 				pc.getInventory().consumeEnchantItem(weapon1, 7, 1);
 				pc.getInventory().consumeEnchantItem(weapon2, 7, 1);
-				pc.getInventory().consumeItem(41246, 1000);
+				pc.getInventory().consumeItem(41246, 30000);
 				pc.getInventory().consumeItem(49143, 10);
 				L1ItemInstance item = pc.getInventory().storeItem(newWeapon, 1);
 				pc.sendPackets(new S_ServerMessage(143, ((L1NpcInstance) obj)
@@ -3425,9 +3425,9 @@ public class C_NPCAction extends ClientBasePacket {
 							+ ItemTable.getInstance().getTemplate(weapon2)
 									.getName())); // \f1%0が不足しています。
 				}
-				if (!pc.getInventory().checkItem(41246, 1000)) {
+				if (!pc.getInventory().checkItem(41246, 30000)) {
 					int itemCount = 0;
-					itemCount = 1000 - pc.getInventory().countItems(41246);
+					itemCount = 30000 - pc.getInventory().countItems(41246);
 					pc.sendPackets(new S_ServerMessage(337, ItemTable
 							.getInstance().getTemplate(41246).getName()
 							+ "(" + itemCount + ")")); // \f1%0が不足しています。
@@ -3476,6 +3476,28 @@ public class C_NPCAction extends ClientBasePacket {
 					htmlid = "tebegate3";
 					// 「上限人数に達している場合は」
 					// htmlid = "tebegate4";
+				}
+			}
+		}
+		// 提卡爾高輪守護者
+		else if (((L1NpcInstance) obj).getNpcTemplate().get_npcId() == 95021) {
+			if (s.equalsIgnoreCase("A")) {
+				if (pc.getInventory().checkItem(49101, 100)) {
+					materials = new int[] { 49101 };
+					counts = new int[] { 100 };
+					createitem = new int[] { 49092 };
+					createcount = new int[] { 1 };
+					htmlid = "joegolem18";
+				} else {
+					htmlid = "joegolem19";
+				}
+			} else if (s.equalsIgnoreCase("B")) {
+				if (pc.getInventory().checkItem(49101, 1)) {
+					pc.getInventory().consumeItem(49101, 1);
+					L1Teleport.teleport(pc, 33966, 33253, (short) 4, 5, true);
+					htmlid = "";
+				} else {
+					htmlid = "joegolem20";
 				}
 			}
 		}

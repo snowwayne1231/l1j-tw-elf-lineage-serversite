@@ -23,12 +23,17 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.text.SimpleDateFormat;
 
+import l1j.server.Config;
 import l1j.server.L1DatabaseFactory;
 import l1j.server.server.model.Instance.L1PcInstance;
 import l1j.server.server.utils.Random;
 import l1j.server.server.utils.SQLUtil;
 import l1j.server.server.utils.collections.Maps;
+import l1j.server.server.serverpackets.S_ServerMessage;
 
 // Referenced classes of package l1j.server.server.model:
 // L1Teleport, L1PcInstance
@@ -66,6 +71,9 @@ public class DungeonRandom {
 				int[] newX = new int[5];
 				int[] newY = new int[5];
 				short[] newMapId = new short[5];
+				int expand = rs.getInt("expand");
+				int hour_start = rs.getInt("hour_start");
+				int hour_end = rs.getInt("hour_end");
 				newX[0] = rs.getInt("new_x1");
 				newY[0] = rs.getInt("new_y1");
 				newMapId[0] = rs.getShort("new_mapid1");
@@ -82,11 +90,31 @@ public class DungeonRandom {
 				newY[4] = rs.getInt("new_y5");
 				newMapId[4] = rs.getShort("new_mapid5");
 				int heading = rs.getInt("new_heading");
-				NewDungeonRandom newDungeonRandom = new NewDungeonRandom(newX, newY, newMapId, heading);
-				if (_dungeonMap.containsKey(key)) {
-					_log.log(Level.WARNING, "同じキーのdungeonデータがあります。key=" + key);
+				if (expand <= 0) {
+					NewDungeonRandom newDungeonRandom = new NewDungeonRandom(newX, newY, newMapId, heading, hour_start, hour_end);
+					if (_dungeonMap.containsKey(key)) {
+						_log.log(Level.WARNING, "同じキーのdungeonデータがあります。key=" + key);
+					} else {
+						_dungeonMap.put(key, newDungeonRandom);
+					}
+				} else if(expand <= 2) {
+					for (int dx = -expand; dx <= expand; dx++) {
+						for (int dy = -expand; dy <= expand; dy++) {
+							if (dx == 0 && dy == 0) {
+								continue;
+							}
+							String expandKey = new StringBuilder().append(srcMapId).append(srcX + dx).append(srcY + dy).toString();
+							NewDungeonRandom newDungeonRandom = new NewDungeonRandom(newX, newY, newMapId, heading, hour_start, hour_end);
+							if (_dungeonMap.containsKey(expandKey)) {
+								_log.log(Level.WARNING, "同dungeon key=" + expandKey);
+							} else {
+								_dungeonMap.put(expandKey, newDungeonRandom);
+							}
+						}
+					}
+				} else {
+					_log.log(Level.WARNING, "expand設定過高 expand=" + expand);
 				}
-				_dungeonMap.put(key, newDungeonRandom);
 			}
 		}
 		catch (SQLException e) {
@@ -108,13 +136,19 @@ public class DungeonRandom {
 
 		int _heading;
 
-		private NewDungeonRandom(int[] newX, int[] newY, short[] newMapId, int heading) {
+		int _hour_start;
+
+		int _hour_end;
+
+		private NewDungeonRandom(int[] newX, int[] newY, short[] newMapId, int heading, int hour_start, int hour_end) {
 			for (int i = 0; i < 5; i++) {
 				_newX[i] = newX[i];
 				_newY[i] = newY[i];
 				_newMapId[i] = newMapId[i];
 			}
 			_heading = heading;
+			_hour_start = hour_start;
+			_hour_end = hour_end;
 		}
 	}
 
@@ -127,7 +161,19 @@ public class DungeonRandom {
 			int newX = newDungeonRandom._newX[rnd];
 			int newY = newDungeonRandom._newY[rnd];
 			int heading = newDungeonRandom._heading;
-
+			int hour_start = newDungeonRandom._hour_start;
+			int hour_end = newDungeonRandom._hour_end;
+			if (hour_start >= 0) {
+				Calendar cal = Calendar.getInstance();
+				SimpleDateFormat sdf = new SimpleDateFormat("HH");
+				Calendar realTime = getRealTime();
+				int nowHour = Integer.valueOf(sdf.format(realTime.getTime()));
+				_log.fine("[NewDungeonRandom] 現在の時間:" + nowHour + " 開始時間:" + hour_start + " 終了時間:" + hour_end);
+				if (nowHour < hour_start || (hour_end > 0 && nowHour > hour_end)) {
+					pc.sendPackets(new S_ServerMessage(79)); // 沒有任何事情發生。
+					return false;
+				}
+			}
 			// 2秒無敵狀態。
 			pc.setSkillEffect(ABSOLUTE_BARRIER, 2000);
 			pc.stopHpRegeneration();
@@ -138,5 +184,11 @@ public class DungeonRandom {
 			return true;
 		}
 		return false;
+	}
+
+	private static Calendar getRealTime() {
+		TimeZone _tz = TimeZone.getTimeZone(Config.TIME_ZONE);
+		Calendar cal = Calendar.getInstance(_tz);
+		return cal;
 	}
 }

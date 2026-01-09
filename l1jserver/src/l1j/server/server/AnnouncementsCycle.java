@@ -20,6 +20,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -114,7 +117,26 @@ public class AnnouncementsCycle {
 
 	private void cycle() {
 		AnnouncementsCycleTask task = new AnnouncementsCycleTask();
-		GeneralThreadPool.getInstance().scheduleAtFixedRate(task, 100000, 60000 * Config.Announcements_Cycle_Time); // 10分鐘公告一次
+		
+		// 計算週期（毫秒）
+		long period = 60000 * Config.Announcements_Cycle_Time;
+		
+		// 計算到下一個整點的延遲時間（毫秒）
+		Calendar now = Calendar.getInstance();
+		Calendar nextHour = Calendar.getInstance();
+		nextHour.set(Calendar.MINUTE, 0);
+		nextHour.set(Calendar.SECOND, 0);
+		nextHour.set(Calendar.MILLISECOND, 0);
+		nextHour.add(Calendar.HOUR_OF_DAY, 1);
+		
+		long initialDelay = nextHour.getTimeInMillis() - now.getTimeInMillis();
+		
+		// 使用餘除對齊到週期的整數倍
+		// 例如：10分鐘週期會在 00:00, 00:10, 00:20... 執行
+		//      60分鐘週期會在 00:00, 01:00, 02:00... 執行
+		initialDelay = initialDelay % period;
+		
+		GeneralThreadPool.getInstance().scheduleAtFixedRate(task, initialDelay + 5000, period);
 	}
 
 	/**
@@ -126,8 +148,9 @@ public class AnnouncementsCycle {
 			scanfile();
 			// 啟用修改時間顯示 - (yyyy.MM.dd)
 			if (AnnounceTimeDisplay) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
-				ShowAnnouncementsCycle("("+ formatter.format(new Date(lastmodify)) + ")");
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+				Calendar realTime = getRealTime();
+				ShowAnnouncementsCycle("現在時間: ("+ formatter.format(realTime.getTime()) + ")");
 			}
 			Iterator<String> iterator = list.listIterator();
 			if (iterator.hasNext()) {
@@ -135,6 +158,12 @@ public class AnnouncementsCycle {
 				ShowAnnouncementsCycle(list.get(round));
 				round++;
 			}
+		}
+
+		private Calendar getRealTime() {
+			TimeZone _tz = TimeZone.getTimeZone(Config.TIME_ZONE);
+			Calendar cal = Calendar.getInstance(_tz);
+			return cal;
 		}
 	}
 

@@ -1051,7 +1051,7 @@ public class L1PcInstance extends L1Character {
 		}
 
 		try {
-			_log.fine("[Server] to [Client][L1PcInstance] : " + serverbasepacket.getClass().getSimpleName());
+			_log.fine("[Server] to [Client][L1PcInstance] : " + serverbasepacket.getType() + " Content :" + serverbasepacket.getContent());
 			_out.sendPacket(serverbasepacket);
 		}
 		catch (Exception e) {

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -475,8 +476,12 @@ public class ClientThread implements Runnable, PacketOutput {
 				byte data[] = Arrays.copyOf(content, content.length);
 				_cipher.encrypt(data);
 				int length = data.length + 2;
-				_log.fine("[Server] to [ClientThread]: " + packet.getClass().getSimpleName() + 
-						", length=" + length);
+				String simpleName = packet.getClass().getSimpleName();
+				List<String> ignoreLogging = Arrays.asList("S_HPMeter", "S_MPUpdate", "S_HPUpdate");
+				if (!ignoreLogging.contains(simpleName)) {
+					_log.fine("[Server] to [ClientThread]: " + simpleName + ", length=" + length + ", content=" + content);
+				}
+				
 				_out.write(length & 0xff);
 				_out.write(length >> 8 & 0xff);
 				_out.write(data);

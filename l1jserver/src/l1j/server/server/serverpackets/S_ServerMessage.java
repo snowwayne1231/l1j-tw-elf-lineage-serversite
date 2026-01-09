@@ -14,6 +14,7 @@
  */
 package l1j.server.server.serverpackets;
 
+import java.util.logging.Logger;
 import l1j.server.server.Opcodes;
 
 public class S_ServerMessage extends ServerBasePacket {
@@ -34,6 +35,8 @@ public class S_ServerMessage extends ServerBasePacket {
 	public static final int YOUR_WEAPON_BLESSING = 693;
 
 	public static final int YOUR_Are_Slowed = 29;
+
+	private static Logger _log = Logger.getLogger(S_ServerMessage.class.getName());
 
 	private byte[] _byte = null;
 
@@ -66,6 +69,8 @@ public class S_ServerMessage extends ServerBasePacket {
 
 		writeC(Opcodes.S_OPCODE_SERVERMSG);
 		writeH(type);
+
+		_log.fine("[S_ServerMessage] Type:" + type);
 
 		if (check == 0) {
 			writeC(0);

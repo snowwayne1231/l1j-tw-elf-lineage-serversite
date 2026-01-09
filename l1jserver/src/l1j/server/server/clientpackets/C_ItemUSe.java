@@ -140,6 +140,8 @@ public class C_ItemUSe extends ClientBasePacket {
 		int itemObjid = readD();
 		
 		L1ItemInstance l1iteminstance = pc.getInventory().getItem(itemObjid);
+
+		_log.fine("[C_ItemUSe] itemObjid= " + itemObjid + " user=" + pc.getName());
 		
 		if (l1iteminstance == null) {
 			return;
@@ -160,7 +162,7 @@ public class C_ItemUSe extends ClientBasePacket {
 		int itemId;
 		try {
 			itemId = l1iteminstance.getItem().getItemId();
-			_log.finest("[C_ItemUSe] itemObjid= " + itemObjid + " itemId=" + itemId + " user=" + pc.getName());
+			_log.finest("[C_ItemUSe] itemObjid= " + itemObjid + " itemId=" + itemId);
 		}
 		catch (Exception e) {
 			return;
@@ -5121,27 +5123,27 @@ public class C_ItemUSe extends ClientBasePacket {
 	private void useToiTeleportAmulet(L1PcInstance pc, int itemId, L1ItemInstance item) {
 		boolean isTeleport = false;
 		if ((itemId == 40289) || (itemId == 40293)) { // 11,51Famulet
-			if ((pc.getX() >= 32816) && (pc.getX() <= 32821) && (pc.getY() >= 32778) && (pc.getY() <= 32783) && (pc.getMapId() == 101)) {
+			if ((pc.getMapId() >= 101  && pc.getMapId() <= 150 )) {
 				isTeleport = true;
 			}
 		}
 		else if ((itemId == 40290) || (itemId == 40294)) { // 21,61Famulet
-			if ((pc.getX() >= 32815) && (pc.getX() <= 32820) && (pc.getY() >= 32815) && (pc.getY() <= 32820) && (pc.getMapId() == 101)) {
+			if ((pc.getMapId() >= 101  && pc.getMapId() <= 160 )) {
 				isTeleport = true;
 			}
 		}
 		else if ((itemId == 40291) || (itemId == 40295)) { // 31,71Famulet
-			if ((pc.getX() >= 32779) && (pc.getX() <= 32784) && (pc.getY() >= 32778) && (pc.getY() <= 32783) && (pc.getMapId() == 101)) {
+			if ((pc.getMapId() >= 101  && pc.getMapId() <= 170 )) {
 				isTeleport = true;
 			}
 		}
 		else if ((itemId == 40292) || (itemId == 40296)) { // 41,81Famulet
-			if ((pc.getX() >= 32779) && (pc.getX() <= 32784) && (pc.getY() >= 32815) && (pc.getY() <= 32820) && (pc.getMapId() == 101)) {
+			if ((pc.getMapId() >= 101  && pc.getMapId() <= 180 )) {
 				isTeleport = true;
 			}
 		}
 		else if (itemId == 40297) { // 91Famulet
-			if ((pc.getX() >= 32706) && (pc.getX() <= 32710) && (pc.getY() >= 32909) && (pc.getY() <= 32913) && (pc.getMapId() == 190)) {
+			if ((pc.getMapId() >= 101  && pc.getMapId() <= 190 )) {
 				isTeleport = true;
 			}
 		}

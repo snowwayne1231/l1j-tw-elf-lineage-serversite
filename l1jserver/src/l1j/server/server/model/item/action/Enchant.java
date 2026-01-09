@@ -90,7 +90,8 @@ public class Enchant {
 
 			int rnd = Random.nextInt(100) + 1;
 			int enchant_chance_wepon;
-			int timesSafeGap = (enchant_level / safe_enchant) + 1;
+			int enchant_level_tmp = (safe_enchant == 0) ? enchant_level + 2 : enchant_level;
+			int timesSafeGap = (safe_enchant == 0) ? enchant_level + 1 : (enchant_level / safe_enchant) + 1;
 			if (timesSafeGap>4) { // 安定值4倍
 				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap) * 4);
 				if (enchant_chance_wepon < 25) {
@@ -98,16 +99,16 @@ public class Enchant {
 				}
 			}
 			else if (timesSafeGap>2) { // 安定值兩倍
-				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap-1) * 5);
+				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap-2) * 5);
 			}
 			else {
-				enchant_chance_wepon = (50 + enchant_level * Config.ENCHANT_CHANCE_WEAPON) / enchant_level;
+				enchant_chance_wepon = (50 + enchant_level_tmp * Config.ENCHANT_CHANCE_WEAPON) / enchant_level_tmp;
 			}
 
 			if (rnd < enchant_chance_wepon) {
 				int randomEnchantLevel = RandomELevel(l1iteminstance1, itemId);
 				SuccessEnchant(pc, l1iteminstance1, client, randomEnchantLevel);
-			} else if (Random.nextInt(Config.ENCHANT_CHANCE_WEAPON + enchant_level + rnd) < Config.ENCHANT_CHANCE_WEAPON) {
+			} else if (Random.nextInt(Config.ENCHANT_CHANCE_WEAPON + enchant_level_tmp + rnd) < Config.ENCHANT_CHANCE_WEAPON) {
 				// \f1%0%s 持續發出 產生激烈的 藍色的 光芒，但是沒有任何事情發生。
 				pc.sendPackets(new S_ServerMessage(160, l1iteminstance1.getLogName(), "$245", "$248"));
 			} else {
@@ -182,13 +183,9 @@ public class Enchant {
 			pc.getInventory().removeItem(l1iteminstance, 1);
 			int rnd = Random.nextInt(100) + 1;
 			int enchant_chance_armor;
-			int enchant_level_tmp;
-			int timesSafeGap = (enchant_level / safe_enchant) + 1;
-			if (safe_enchant == 0) { // 骨、ブラックミスリル用補正
-				enchant_level_tmp = enchant_level + 2;
-			} else {
-				enchant_level_tmp = enchant_level;
-			}
+			int enchant_level_tmp = (safe_enchant == 0) ? enchant_level + 2 : enchant_level;
+			int timesSafeGap = (safe_enchant == 0) ? enchant_level + 1 : (enchant_level / safe_enchant) + 1;
+			
 			
 			if (timesSafeGap > 2) { // 安定值兩倍
 				enchant_chance_armor = Config.ENCHANT_CHANCE_ARMOR - ((timesSafeGap-2) * 5);
@@ -196,7 +193,7 @@ public class Enchant {
 					enchant_chance_armor = 25;
 				}
 			} 
-			else if (enchant_level >= 8) {
+			else if (enchant_level_tmp >= 8) {
 				enchant_chance_armor = Config.ENCHANT_CHANCE_ARMOR;
 			} else {
 				enchant_chance_armor = (60 + enchant_level_tmp * Config.ENCHANT_CHANCE_ARMOR) / enchant_level_tmp;
@@ -206,7 +203,7 @@ public class Enchant {
 				int randomEnchantLevel = RandomELevel(l1iteminstance1, itemId);
 				SuccessEnchant(pc, l1iteminstance1, client, randomEnchantLevel);
 			}
-			else if (Random.nextInt((Config.ENCHANT_CHANCE_ARMOR + enchant_level)*2 + rnd) < Config.ENCHANT_CHANCE_ARMOR) {
+			else if (Random.nextInt((Config.ENCHANT_CHANCE_ARMOR + enchant_level_tmp)*2 + rnd) < Config.ENCHANT_CHANCE_ARMOR) {
 				// \f1%0%s 持續發出 產生激烈的 銀色的 光芒，但是沒有任何事情發生。
 				pc.sendPackets(new S_ServerMessage(160, l1iteminstance1.getLogName(), "$252", "$248"));
 			} else {
