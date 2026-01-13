@@ -224,20 +224,18 @@ public class C_LoginToServer extends ClientBasePacket {
 		pc.sendPackets(new S_Mail(pc , 1));
 		pc.sendPackets(new S_Mail(pc , 2));
 		
-		pc.beginGameTimeCarrier(); // 問題在此 0023:00590f2c.
+		pc.beginGameTimeCarrier(); // 不能超出位元時間
 		
 		pc.sendPackets(new S_RuneSlot(S_RuneSlot.RUNE_CLOSE_SLOT, 3)); // 符文關閉欄位數
 		pc.sendPackets(new S_RuneSlot(S_RuneSlot.RUNE_OPEN_SLOT, 1)); // 符文開放欄位數
 
 		
 		pc.setEquipments();
-		// _log.info("[" + charName + "] 裝備檢查完成 ");
 		pc.sendPackets(new S_ActiveSpells(pc));
 		pc.sendPackets(new S_Bookmarks(pc));
-		pc.sendPackets(new S_OwnCharStatus(pc)); // 問題在此 0023:00590f2c.
+		pc.sendPackets(new S_OwnCharStatus(pc));
 		pc.sendPackets(new S_MapID(pc.getMapId(), pc.getMap().isUnderwater()));
-		// _log.info("[" + charName + "] 地圖檢查完成 ");
-		// good 
+		
 		pc.sendPackets(new S_OwnCharPack(pc));
 		
 		pc.sendPackets(new S_SPMR(pc));

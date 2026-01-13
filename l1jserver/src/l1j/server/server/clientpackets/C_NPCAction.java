@@ -80,6 +80,7 @@ import l1j.server.server.model.npc.L1NpcHtml;
 import l1j.server.server.model.npc.action.L1NpcAction;
 import l1j.server.server.model.skill.L1BuffUtil;
 import l1j.server.server.model.skill.L1SkillUse;
+import l1j.server.server.model.item.action.Potion;
 import l1j.server.server.serverpackets.S_ApplyAuction;
 import l1j.server.server.serverpackets.S_AuctionBoardRead;
 import l1j.server.server.serverpackets.S_CharReset;
@@ -4369,19 +4370,22 @@ public class C_NPCAction extends ClientBasePacket {
 			int[] skills = new int[10];
 			char s1 = s.charAt(0);
 			switch(s1){
+			case 'c':
+				skills = new int[] {43, 79, 151, 158, 160, 206, 211, 216, 115, 138, 129};                     
+				break;
 			case 'b':
-				skills = new int[] {43, 79, 151, 158, 160, 206, 211, 216, 115, 149};                     
+				skills = new int[] {43, 79, 151, 158, 160, 206, 211, 216, 115, 149, 166};                     
 				break;
 			case 'a':
-				skills = new int[] {43, 79, 151, 158, 160, 206, 211, 216, 115, 148};
+				skills = new int[] {43, 79, 151, 158, 160, 206, 211, 216, 115, 148, 175};
 				break;
 			}
-			if (s.equalsIgnoreCase("a") || s.equalsIgnoreCase("b")){
-				if(pc.getInventory().consumeItem(L1ItemId.ADENA,3000)){
+			if (s.equalsIgnoreCase("a") || s.equalsIgnoreCase("b") || s.equalsIgnoreCase("c")){
+				if(pc.getInventory().consumeItem(L1ItemId.ADENA,10)){
 					L1SkillUse l1skilluse = new L1SkillUse();
 					for (int i = 0; i < skills.length; i++) {
 						l1skilluse.handleCommands(pc, 
-								skills[i], pc.getId(), pc.getX(), pc.getY(), null, 0, L1SkillUse.TYPE_GMBUFF);
+								skills[i], pc.getId(), pc.getX(), pc.getY(), null, 1800, L1SkillUse.TYPE_GMBUFF);
 					}
 					htmlid = "bs_done";           
 				} else {

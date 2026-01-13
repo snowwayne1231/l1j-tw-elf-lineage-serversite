@@ -212,6 +212,8 @@ public final class Config {
 
 	public static boolean ALT_REVIVAL_POTION;
 
+	public static boolean ALT_MISSION_RANDOM_ABILITY;
+
 	public static int ALT_WAR_TIME;
 
 	public static int ALT_WAR_TIME_UNIT;
@@ -564,6 +566,7 @@ public final class Config {
 			ALT_TALKINGSCROLLQUEST = Boolean.parseBoolean(altSettings.getProperty("TalkingScrollQuest", "false"));
 			ALT_WHO_COMMAND = Boolean.parseBoolean(altSettings.getProperty("WhoCommand", "false"));
 			ALT_REVIVAL_POTION = Boolean.parseBoolean(altSettings.getProperty("RevivalPotion", "false"));
+			ALT_MISSION_RANDOM_ABILITY = Boolean.parseBoolean(altSettings.getProperty("MissionRandomAbility", "false"));
 			GDROPITEM_TIME = Integer.parseInt(altSettings.getProperty("GDropItemTime", "10")); 
 
 			String strWar;

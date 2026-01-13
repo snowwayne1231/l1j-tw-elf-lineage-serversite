@@ -147,11 +147,11 @@ public class C_CreateChar extends ClientBasePacket {
 	private static final int[] FEMALE_LIST = new int[]{ 1, 48, 37, 1186, 2796, 6661, 6650 };
 
 	/* 台灣伺服器 3.80C 新手村*/
-	private static final int LOCX = 33086;
+	private static final int LOCX = 32689;
 
-	private static final int LOCY = 33392;
+	private static final int LOCY = 32858;
 
-	private static final short MAPID = 4;
+	private static final short MAPID = 2005;
 
 	private static void initNewChar(ClientThread client, L1PcInstance pc) throws IOException, Exception {
 

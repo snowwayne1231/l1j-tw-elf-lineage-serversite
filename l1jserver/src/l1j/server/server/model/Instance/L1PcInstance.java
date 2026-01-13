@@ -2646,11 +2646,15 @@ public class L1PcInstance extends L1Character {
 
 		// 根據等級判斷地圖限制
 		if ((getMapId() == 2005 || getMapId() == 86)) { // 新手村
-			if (getLevel() >= 35) { // 等級大於35
+			if (getLevel() >= 15) { // 等級大於15
 				if (getQuest().get_step(L1Quest.QUEST_TUTOR) != 255) {
 					getQuest().set_step(L1Quest.QUEST_TUTOR, 255);
 				}
-				L1Teleport.teleport(this, 33084, 33391, (short) 4, 5, true);// 銀騎士村
+				if (isCrown() || isWizard()) {
+					L1Teleport.teleport(this, 32581, 32927, (short) 0, 5, true);// 說話之島
+				} else {
+					L1Teleport.teleport(this, 33084, 33391, (short) 4, 5, true);// 銀騎士村
+				}
 			}
 		} else if (getLevel() >= 52) { // 指定レベル
 			if (getMapId() == 777) { // 見捨てられた者たちの地(影の神殿)

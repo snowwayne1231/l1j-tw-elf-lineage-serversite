@@ -15,7 +15,11 @@
 package l1j.server.server.model.npc.action;
 
 import org.w3c.dom.Element;
-
+import l1j.server.Config;
+import l1j.server.server.serverpackets.S_ServerMessage;
+import l1j.server.server.serverpackets.S_OwnCharStatus2;
+import l1j.server.server.serverpackets.S_CharVisualUpdate;
+import l1j.server.server.serverpackets.S_EffectLocation;
 import l1j.server.server.model.L1Object;
 import l1j.server.server.model.Instance.L1PcInstance;
 import l1j.server.server.model.npc.L1NpcHtml;
@@ -39,7 +43,31 @@ public class L1NpcSetQuestAction extends L1NpcXmlAction {
 	public L1NpcHtml execute(String actionName, L1PcInstance pc, L1Object obj,
 			byte[] args) {
 		pc.getQuest().set_step(_id, _step);
+		// 檢查是否為特定任務完成
+		if (Config.ALT_MISSION_RANDOM_ABILITY && pc.getQuest().isEnd(_id)) {
+			addRandomAbility(pc);
+		}
 		return null;
 	}
+
+	/**
+	 * 隨機增加角色能力值
+	 */
+	private void addRandomAbility(L1PcInstance pc) {
+		int randomStat = (int)(Math.random() * 6); // 0-5 隨機數
+		switch(randomStat) {
+			case 0: pc.addBaseStr((byte)1); break;
+			case 1: pc.addBaseDex((byte)1); break;
+			case 2: pc.addBaseCon((byte)1); break;
+			case 3: pc.addBaseWis((byte)1); break;
+			case 4: pc.addBaseCha((byte)1); break;
+			case 5: pc.addBaseInt((byte)1); break;
+		}
+		pc.sendPackets(new S_ServerMessage(822));
+		pc.sendPackets(new S_OwnCharStatus2(pc, 0));
+		pc.sendPackets(new S_CharVisualUpdate(pc));
+		pc.sendPackets(new S_EffectLocation(pc.getX(), pc.getY(), 227));
+	}
+
 
 }
