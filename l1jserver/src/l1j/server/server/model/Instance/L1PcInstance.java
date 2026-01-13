@@ -3201,11 +3201,11 @@ public class L1PcInstance extends L1Character {
 	public void resetBaseDmgup() {
 		int newBaseDmgup = 0;
 		int newBaseBowDmgup = 0;
-		if (isKnight() || isDarkelf() || isDragonKnight()) { // ナイト、ダークエルフ、ドラゴンナイト
+		if (isKnight() || isDarkelf() || isDragonKnight() || isCrown()) { // ナイト、ダークエルフ、ドラゴンナイト
 			newBaseDmgup = getLevel() / 10;
 			newBaseBowDmgup = 0;
 		}
-		else if (isElf()) { // エルフ
+		else if (isElf() || isIllusionist()) { // エルフ
 			newBaseDmgup = 0;
 			newBaseBowDmgup = getLevel() / 10;
 		}

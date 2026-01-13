@@ -4387,7 +4387,7 @@ public class C_NPCAction extends ClientBasePacket {
 						l1skilluse.handleCommands(pc, 
 								skills[i], pc.getId(), pc.getX(), pc.getY(), null, 1800, L1SkillUse.TYPE_GMBUFF);
 					}
-					htmlid = "bs_done";           
+					htmlid = "bs_done";
 				} else {
 					htmlid = "bs_adena";
 				}

@@ -22,10 +22,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import l1j.server.Config;
 import l1j.server.L1DatabaseFactory;
 import l1j.server.server.model.Instance.L1PcInstance;
 import l1j.server.server.utils.SQLUtil;
 import l1j.server.server.utils.collections.Maps;
+import l1j.server.server.serverpackets.S_ServerMessage;
+import l1j.server.server.serverpackets.S_OwnCharStatus2;
+import l1j.server.server.serverpackets.S_CharVisualUpdate;
+import l1j.server.server.serverpackets.S_EffectLocation;
 
 public class L1Quest {
 	private static Logger _log = Logger.getLogger(L1Quest.class.getName());
@@ -163,6 +168,8 @@ public class L1Quest {
 				pstm.setInt(3, quest_id);
 				pstm.execute();
 			}
+
+			onQuestComplete(quest_id);
 		}
 		catch (SQLException e) {
 			_log.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -193,4 +200,42 @@ public class L1Quest {
 		return false;
 	}
 
+	private void onQuestComplete(int quest_id) {
+		// TODO 完成任務獎勵
+		if (Config.ALT_MISSION_RANDOM_ABILITY && isEnd(quest_id)) {
+			addRandomAbility();
+		}
+	}
+
+	/**
+	 * 隨機增加角色能力值
+	 */
+	private void addRandomAbility() {
+		int randomStat = (int)(Math.random() * 6); // 0-5 隨機數
+		if (_owner.isIllusionist() && randomStat == 0) {
+			randomStat = 5;
+		} else if (_owner.isWizard() && randomStat == 1) {
+			randomStat = 3;
+		} else if (_owner.isDarkelf() && randomStat == 2) {
+			randomStat = 1;
+		} else if (_owner.isDragonKnight() && randomStat == 3) {
+			randomStat = 0;
+		} else if (_owner.isKnight() && randomStat == 4) {
+			randomStat = 2;
+		} else if (_owner.isCrown() && randomStat == 5) {
+			randomStat = 4;
+		}
+		switch(randomStat) {
+			case 0: _owner.addBaseStr((byte)1); break;
+			case 1: _owner.addBaseWis((byte)1); break;
+			case 2: _owner.addBaseDex((byte)1); break;
+			case 3: _owner.addBaseCon((byte)1); break;
+			case 4: _owner.addBaseCha((byte)1); break;
+			case 5: _owner.addBaseInt((byte)1); break;
+		}
+		_owner.sendPackets(new S_ServerMessage(822));
+		_owner.sendPackets(new S_OwnCharStatus2(_owner, 0));
+		_owner.sendPackets(new S_CharVisualUpdate(_owner));
+		_owner.sendPackets(new S_EffectLocation(_owner.getX(), _owner.getY(), 227));
+	}
 }
