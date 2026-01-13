@@ -1280,7 +1280,7 @@
 		<Material Amount="1" ItemId="40641"/>		<!--說話卷軸-->
 		<Succeed>
 			<ShowHtml HtmlId=""/>
-			<SetQuest Id="toscroll" Step="1"/>
+			<SetQuest Id="toscroll" Step="2"/>
 		</Succeed>
 	</MakeItem>
 
@@ -1292,12 +1292,12 @@
 		<Material Amount="1" ItemId="40641"/>		<!--說話卷軸-->
 		<Succeed>
 			<ShowHtml HtmlId=""/>
-			<SetQuest Id="toscroll" Step="1"/>
+			<SetQuest Id="toscroll" Step="2"/>
 		</Succeed>
 	</MakeItem>
 
 	<!--莉莉 / 說話之島村莊-->
-	<MakeItem Name="0" Class="PWEKDRI" NpcId="50111" AmountInputable="false" QuestId="toscroll" QuestStep="1">
+	<MakeItem Name="0" Class="PWEKDRI" NpcId="50111" AmountInputable="false" QuestId="toscroll" QuestStep="0">
 		<Item Amount="200" ItemId="40029"/>		<!--象牙塔治癒藥水-->
 		<Item Amount="20" ItemId="40080"/>		<!--古魯丁村莊指定傳送卷軸-->
 		<Item Amount="1" ItemId="40641"/>		<!--說話卷軸-->
