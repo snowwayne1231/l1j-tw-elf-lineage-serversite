@@ -1445,7 +1445,7 @@
 	<MakeItem Name="0" Class="PWEKDRI" NpcId="50115" AmountInputable="false" QuestId="toscroll" QuestStep="13">
 		<Item Amount="1" ItemId="20082"/>		<!--象牙塔T恤-->
 		<Item Amount="200" ItemId="40029"/>		<!--象牙塔治癒藥水-->
-		<Item Amount="1" ItemId="40641"/>		<!--說話卷軸-->
+		<!-- <Item Amount="1" ItemId="40641"/>		說話卷軸 -->
 		<Material Amount="1" ItemId="40641"/>		<!--說話卷軸-->
 		<Succeed>
 			<ShowHtml HtmlId=""/>

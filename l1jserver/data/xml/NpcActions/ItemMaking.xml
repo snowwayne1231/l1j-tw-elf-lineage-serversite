@@ -3508,4 +3508,11 @@
 			<Material Amount="1" ItemId="41224" />	<!--徽章-->
 		</MakeItem>
 	</Action>
+	<!--燦爛的艾咪 龍的霸氣-->
+	<Action Name="request craft" NpcId="81285">
+		<MakeItem>
+			<Item Amount="30" ItemId="40308" />		<!--金幣-->
+			<Material Amount="1" ItemId="41224" />	<!--徽章-->
+		</MakeItem>
+	</Action>
 </NpcActionList>

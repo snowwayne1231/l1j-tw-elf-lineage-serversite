@@ -138,7 +138,6 @@ public class C_NPCAction extends ClientBasePacket {
 		
 		int objid = readD();
 		String s = readS();
-		_log.info("[C_NPCAction] objid=" + objid + " action=" + s);
 		String s2 = null;
 		if (s.equalsIgnoreCase("select") // 拍賣公告板的選擇
 				|| s.equalsIgnoreCase("map") // 地圖位置的確認
@@ -174,6 +173,7 @@ public class C_NPCAction extends ClientBasePacket {
 				L1NpcInstance npc = (L1NpcInstance) obj;
 				int difflocx = Math.abs(pc.getX() - npc.getX());
 				int difflocy = Math.abs(pc.getY() - npc.getY());
+				_log.info("[C_NPCAction] objid=" + objid + "npcid=" + npc.getNpcTemplate().get_npcId() + " action=" + s);
 				if (!(obj instanceof L1PetInstance) && !(obj instanceof L1SummonInstance)) {
 					if ((difflocx > 5) || (difflocy > 5)) { // 5格以上的距離對話無效
 						return;
@@ -5140,6 +5140,9 @@ public class C_NPCAction extends ClientBasePacket {
 
 		if (htmlid != null) { // html指定がある場合は表示
 			pc.sendPackets(new S_NPCTalkReturn(objid, htmlid, htmldata));
+		} else {
+			pc.sendPackets(new S_NPCTalkReturn(objid, L1NpcHtml.HTML_CLOSE));
+			pc.sendPackets(new S_ServerMessage(1288));
 		}
 	}
 
