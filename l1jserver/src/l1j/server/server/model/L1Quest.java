@@ -168,8 +168,6 @@ public class L1Quest {
 				pstm.setInt(3, quest_id);
 				pstm.execute();
 			}
-
-			onQuestComplete(quest_id);
 		}
 		catch (SQLException e) {
 			_log.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -181,6 +179,7 @@ public class L1Quest {
 
 		}
 		_quest.put(new Integer(quest_id), new Integer(step));
+		onQuestComplete(quest_id);
 	}
 
 	public void add_step(int quest_id, int add) {
