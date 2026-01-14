@@ -173,7 +173,7 @@ public class C_NPCAction extends ClientBasePacket {
 				L1NpcInstance npc = (L1NpcInstance) obj;
 				int difflocx = Math.abs(pc.getX() - npc.getX());
 				int difflocy = Math.abs(pc.getY() - npc.getY());
-				_log.info("[C_NPCAction] objid=" + objid + "npcid=" + npc.getNpcTemplate().get_npcId() + " action=" + s);
+				_log.info("[C_NPCAction] objid=" + objid + " npcid=" + npc.getNpcTemplate().get_npcId() + " action=" + s);
 				if (!(obj instanceof L1PetInstance) && !(obj instanceof L1SummonInstance)) {
 					if ((difflocx > 5) || (difflocy > 5)) { // 5格以上的距離對話無效
 						return;
@@ -5141,8 +5141,26 @@ public class C_NPCAction extends ClientBasePacket {
 		if (htmlid != null) { // html指定がある場合は表示
 			pc.sendPackets(new S_NPCTalkReturn(objid, htmlid, htmldata));
 		} else if (obj instanceof L1MerchantInstance) {
-			pc.sendPackets(new S_NPCTalkReturn(objid, L1NpcHtml.HTML_CLOSE));
-			pc.sendPackets(new S_ServerMessage(1288));
+			// 定義商店相關指令白名單
+			final String[] SHOP_COMMANDS = {
+				"buy", "sell", "retrieve", "retrieve-elven", "retrieve-pledge",
+				"history", "room", "hall", "return", "enter", "fix"
+			};
+			
+			// 檢查是否為商店指令
+			boolean isShopCommand = false;
+			for (String command : SHOP_COMMANDS) {
+				if (s.equalsIgnoreCase(command)) {
+					isShopCommand = true;
+					break;
+				}
+			}
+			
+			// 如果不是商店指令，則顯示錯誤訊息
+			if (!isShopCommand) {
+				pc.sendPackets(new S_NPCTalkReturn(objid, L1NpcHtml.HTML_CLOSE));
+				pc.sendPackets(new S_ServerMessage(1288));
+			}
 		}
 	}
 
