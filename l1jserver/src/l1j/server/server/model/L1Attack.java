@@ -811,7 +811,7 @@ public class L1Attack {
 		}
 
 		if (darkElfWeapon && _pc.hasSkillEffect(DOUBLE_BRAKE)) 
-			if ((Random.nextInt(100) + 1) <= _weaponDoubleDmgChance) 
+			if ((Random.nextInt(100) + 1) <= 31 + (int) ((_pc.getDex() + _pc.getLevel()) / 4)) 
 				weaponDamage *= 2;
 
 		return weaponDamage;
@@ -1265,23 +1265,23 @@ public class L1Attack {
 		if (_weaponType2 == 18) {
 			// 弱點曝光 - 傷害加成
 			if (_pc.hasSkillEffect(SPECIAL_EFFECT_WEAKNESS_LV3)) {
-				dmg += 9;
+				dmg += 15;
 			} else if (_pc.hasSkillEffect(SPECIAL_EFFECT_WEAKNESS_LV2)) {
-				dmg += 6;
+				dmg += 10;
 			} else if (_pc.hasSkillEffect(SPECIAL_EFFECT_WEAKNESS_LV1)) {
-				dmg += 3;
+				dmg += 5;
 			}
-		}
-		// 屠宰者 & 弱點曝光LV3 - 傷害 *1.3
-		if (_pc.isFoeSlayer()
-				&& _pc.hasSkillEffect(SPECIAL_EFFECT_WEAKNESS_LV3)) {
-			dmg *= 1.3;
 		}
 		if (_pc.hasSkillEffect(BURNING_SLASH)) { // 燃燒擊砍
 			dmg += 10;
 			_pc.sendPackets(new S_EffectLocation(_targetX, _targetY, 6591));
 			_pc.broadcastPacket(new S_EffectLocation(_targetX, _targetY, 6591));
 			_pc.killSkillEffectTimer(BURNING_SLASH);
+		}
+		// 屠宰者 & 弱點曝光LV3 - 傷害 *1.3
+		if (_pc.isFoeSlayer()
+				&& _pc.hasSkillEffect(SPECIAL_EFFECT_WEAKNESS_LV3)) {
+			dmg *= 1.3;
 		}
 
 		return dmg;
@@ -1305,14 +1305,14 @@ public class L1Attack {
 		int undead = _targetNpc.getNpcTemplate().get_undead();
 		if (((_weaponMaterial == 14) || (_weaponMaterial == 17) || (_weaponMaterial == 22))
 				&& ((undead == 1) || (undead == 3) || (undead == 5))) { // 銀・ミスリル・オリハルコン、かつ、アンデッド系・アンデッド系ボス・銀特効モンスター
-			damage += Random.nextInt(30) + 10;
+			damage += Random.nextInt(10) + 10;
 		} else if (((_weaponMaterial == 17) || (_weaponMaterial == 22))
 				&& (undead == 2)) { // ミスリル・オリハルコン、かつ、悪魔系
-			damage += Random.nextInt(15) + 10;
+			damage += Random.nextInt(10) + 10;
 		}
 		if ((_weaponBless == 0)
 				&& ((undead == 1) || (undead == 2) || (undead == 3))) { // 祝福武器、かつ、アンデッド系・悪魔系・アンデッド系ボス
-			damage += Random.nextInt(15) + 10;
+			damage += Random.nextInt(5) + 5;
 		}
 		if ((_pc.getWeapon() != null) && ((undead == 1) || (undead == 3))) {
 			damage += weapon.getHolyDmgByMagic();

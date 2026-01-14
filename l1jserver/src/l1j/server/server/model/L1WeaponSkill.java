@@ -342,6 +342,9 @@ public class L1WeaponSkill {
 			pc.sendPackets(new S_SkillSound(pc.getId(), 7049));
 			pc.broadcastPacket(new S_SkillSound(pc.getId(), 7049));
 		}
+		// 因版本法師傷害調整, 奇古獸也需調整
+		dmg *= 2;
+		dmg /= 3;
 
 		return calcDamageReduction(pc, cha, dmg, 0);
 	}
