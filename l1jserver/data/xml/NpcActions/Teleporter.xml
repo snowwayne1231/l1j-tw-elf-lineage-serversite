@@ -247,7 +247,7 @@
 <!--食屍地-->	
 	<!--墮落的靈魂 / 往邪念地監-->
 	<Action Name="teleport evil-dungeon" NpcId="71095">
-		<Teleport X="32608" Y="32772" Map="4" Heading="4" Price="0" />
+		<Teleport X="32608" Y="32772" Map="306" Heading="4" Price="0" />
 	</Action>
 	
 
