@@ -5140,7 +5140,7 @@ public class C_NPCAction extends ClientBasePacket {
 
 		if (htmlid != null) { // html指定がある場合は表示
 			pc.sendPackets(new S_NPCTalkReturn(objid, htmlid, htmldata));
-		} else {
+		} else if (obj instanceof L1MerchantInstance) {
 			pc.sendPackets(new S_NPCTalkReturn(objid, L1NpcHtml.HTML_CLOSE));
 			pc.sendPackets(new S_ServerMessage(1288));
 		}
