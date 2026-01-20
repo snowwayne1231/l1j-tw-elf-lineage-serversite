@@ -91,11 +91,11 @@ public class Enchant {
 			int rnd = Random.nextInt(100) + 1;
 			int enchant_chance_wepon;
 			int enchant_level_tmp = (safe_enchant == 0) ? enchant_level + 2 : enchant_level;
-			int timesSafeGap = (safe_enchant == 0) ? enchant_level + 1 : (enchant_level / safe_enchant) + 1;
+			int timesSafeGap = (safe_enchant == 0) ? (enchant_level / 2) + 1 : (enchant_level / safe_enchant) + 1;
 			if (timesSafeGap>4) { // 安定值4倍
-				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap) * 4);
-				if (enchant_chance_wepon < 25) {
-					enchant_chance_wepon = 25;
+				enchant_chance_wepon = Config.ENCHANT_CHANCE_WEAPON - ((timesSafeGap) * 3);
+				if (enchant_chance_wepon < (int) Config.ENCHANT_CHANCE_WEAPON / 2) {
+					enchant_chance_wepon = (int) Config.ENCHANT_CHANCE_WEAPON / 2;
 				}
 			}
 			else if (timesSafeGap>2) { // 安定值兩倍
@@ -108,18 +108,18 @@ public class Enchant {
 			if (rnd < enchant_chance_wepon) {
 				int randomEnchantLevel = RandomELevel(l1iteminstance1, itemId);
 				SuccessEnchant(pc, l1iteminstance1, client, randomEnchantLevel);
-			} else if (Random.nextInt(Config.ENCHANT_CHANCE_WEAPON + enchant_level_tmp + rnd) < Config.ENCHANT_CHANCE_WEAPON) {
+			} else if (rnd <= Config.ENCHANT_CHANCE_WEAPON) {
 				// \f1%0%s 持續發出 產生激烈的 藍色的 光芒，但是沒有任何事情發生。
 				pc.sendPackets(new S_ServerMessage(160, l1iteminstance1.getLogName(), "$245", "$248"));
 			} else {
-				int rndBoom = Random.nextInt(100*timesSafeGap) + 1;
-				boolean isBoom = rndBoom > 100 + Config.ENCHANT_CHANCE_WEAPON; // 安定值倍數越高，爆掉機率越高
-				// 用祝福的卷軸時不會破壞裝備
+				int rndBoom = Random.nextInt(100+(10*timesSafeGap)) + 1; // 安定值倍數越高，爆掉機率越高
+				// 用祝福的卷軸不會輕易破壞裝備
 				if ((itemId == L1ItemId.B_SCROLL_OF_ENCHANT_ARMOR) || 
 					(itemId == L1ItemId.B_SCROLL_OF_ENCHANT_WEAPON) ||
 					(itemId == 140129) || (itemId == 140130)) {
-					isBoom = false;
+					rndBoom -= 25;
 				}
+				boolean isBoom = rndBoom > Config.ENCHANT_CHANCE_WEAPON; 
 				if (isBoom) {
 					FailureEnchant(pc, l1iteminstance1);
 				} else {
@@ -184,13 +184,13 @@ public class Enchant {
 			int rnd = Random.nextInt(100) + 1;
 			int enchant_chance_armor;
 			int enchant_level_tmp = (safe_enchant == 0) ? enchant_level + 2 : enchant_level;
-			int timesSafeGap = (safe_enchant == 0) ? enchant_level + 1 : (enchant_level / safe_enchant) + 1;
+			int timesSafeGap = (safe_enchant == 0) ? (enchant_level / 2) + 1 : (enchant_level / safe_enchant) + 1;
 			
 			
 			if (timesSafeGap > 2) { // 安定值兩倍
 				enchant_chance_armor = Config.ENCHANT_CHANCE_ARMOR - ((timesSafeGap-2) * 5);
-				if (enchant_chance_armor < 25) {
-					enchant_chance_armor = 25;
+				if (enchant_chance_armor < (int) Config.ENCHANT_CHANCE_ARMOR / 2) {
+					enchant_chance_armor = (int) Config.ENCHANT_CHANCE_ARMOR / 2;
 				}
 			} 
 			else if (enchant_level_tmp >= 8) {
@@ -203,18 +203,18 @@ public class Enchant {
 				int randomEnchantLevel = RandomELevel(l1iteminstance1, itemId);
 				SuccessEnchant(pc, l1iteminstance1, client, randomEnchantLevel);
 			}
-			else if (Random.nextInt((Config.ENCHANT_CHANCE_ARMOR + enchant_level_tmp)*2 + rnd) < Config.ENCHANT_CHANCE_ARMOR) {
+			else if (rnd < Config.ENCHANT_CHANCE_ARMOR) {
 				// \f1%0%s 持續發出 產生激烈的 銀色的 光芒，但是沒有任何事情發生。
 				pc.sendPackets(new S_ServerMessage(160, l1iteminstance1.getLogName(), "$252", "$248"));
 			} else {
-				int rndBoom = Random.nextInt(100*timesSafeGap) + 1;
-				boolean isBoom = rndBoom > Config.ENCHANT_CHANCE_ARMOR; // 安定值倍數越高，爆掉機率越高
-				// 用祝福的卷軸時不會破壞裝備
+				int rndBoom = Random.nextInt(100+(10*timesSafeGap)) + 1; // 安定值倍數越高，爆掉機率越高
+				// 用祝福的卷軸時不會輕易破壞裝備
 				if ((itemId == L1ItemId.B_SCROLL_OF_ENCHANT_ARMOR) || 
 					(itemId == L1ItemId.B_SCROLL_OF_ENCHANT_WEAPON) ||
 					(itemId == 140129) || (itemId == 140130)) {
-					isBoom = false;
+					rndBoom -= 20;
 				}
+				boolean isBoom = rndBoom > Config.ENCHANT_CHANCE_ARMOR;
 				if (isBoom) {
 					FailureEnchant(pc, l1iteminstance1);
 				} else {
