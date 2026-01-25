@@ -265,36 +265,35 @@ public class L1MerchantInstance extends L1NpcInstance {
 									item_amounts[i]);
 						}
 					}
+				} else if (npcid == 71200) { // 白魔術師 ピエタ
+					if (player.isCrown()) { // 君主
+						int lv45_step = quest.get_step(L1Quest.QUEST_LEVEL45);
+						if (lv45_step >= 6 && lv45_step == L1Quest.QUEST_END ) {
+							//メグクリア済みor終了
+							htmlid = "pieta9";
+						} else if (lv45_step == 2) { // クエスト開始前・メグ同意済み
+							htmlid = "pieta2";
+						} else if (lv45_step == 2 ||
+							player.getInventory().checkItem(41422) ) {
+							//輝きを失った魂保持
+							htmlid = "pieta4";
+						} else if (lv45_step == 3) { // 輝きを失った魂入後
+							htmlid = "pieta6";
+						} else {//lv45未満orクエスト30未
+							htmlid = "pieta8";
+						}
+					} else { // 君主以外
+						htmlid = "pieta1";
+					}
+				} else if (npcid == 70751) { // ブラッド
+				if (player.isCrown()) { // 君主
+				if (player.getLevel() >= 45) {
+				if (quest.get_step(L1Quest.QUEST_LEVEL45) == 2) { 
+					//メグ同意済み
+					htmlid = "brad1";
 				}
-				// } else if (npcid == 71200) { // 白魔術師 ピエタ
-				// if (player.isCrown()) { // 君主
-				// int lv45_step = quest.get_step(L1Quest.QUEST_LEVEL45);
-				// if (lv45_step >= 6 && lv45_step == L1Quest.QUEST_END ) {
-				// //メグクリア済みor終了
-				// htmlid = "pieta9";
-				// } else if (lv45_step == 2) { // クエスト開始前・メグ同意済み
-				// htmlid = "pieta2";
-				// } else if (lv45_step == 2 ||
-				// player.getInventory().checkItem(41422) ) {//
-				// 輝きを失った魂保持
-				// htmlid = "pieta4";
-				// } else if (lv45_step == 3) { // 輝きを失った魂入後
-				// htmlid = "pieta6";
-				// } else {//lv45未満orクエスト30未
-				// htmlid = "pieta8";
-				// }
-				// } else { // 君主以外
-				// htmlid = "pieta1";
-				// }
-				// } else if (npcid == 70751) { // ブラッド
-				// if (player.isCrown()) { // 君主
-				// if (player.getLevel() >= 45) {
-				// if (quest.get_step(L1Quest.QUEST_LEVEL45) == 2) { //
-				// メグ同意済み
-				// htmlid = "brad1";
-				// }
-				// }
-				// }
+				}
+				}
 			} else if (npcid == 70798) { // リッキー
 				if (player.isKnight()) { // ナイト
 					if (player.getLevel() >= 15) {

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>優化版地圖編輯器</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #controls {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        #container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #canvasContainer {
+            flex: 1;
+            position: relative;
+            overflow: auto;
+            background: #34495e;
+        }
+
+        #mapCanvas {
+            display: block;
+            cursor: crosshair;
+            image-rendering: pixelated;
+        }
+
+        #selectionCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            image-rendering: pixelated;
+        }
+
+        #miniMapCanvas {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            border: 3px solid #2c3e50;
+            cursor: pointer;
+            image-rendering: pixelated;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        #coordinateInfo {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            pointer-events: none;
+            font-size: 14px;
+        }
+
+        #pageInfo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(52, 152, 219, 0.95);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            pointer-events: none;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #pageControls {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background: rgba(44, 62, 80, 0.95);
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-nav {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .page-nav button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .tool-button {
+            padding: 8px 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .tool-button.active {
+            border-color: #e74c3c;
+            background: #e74c3c;
+        }
+
+        #stats {
+            background: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <div class="control-group">
+            <button onclick="document.getElementById('fileInput').click()">📁 載入地圖</button>
+            <input type="file" id="fileInput" accept=".csv,.txt">
+        </div>
+
+        <div class="control-group">
+            <button onclick="saveCSV()">💾 儲存CSV</button>
+        </div>
+
+        <div class="control-group">
+            <label>工具:</label>
+            <button class="tool-button active" onclick="setTool('pen')" id="penTool">✏️ 筆刷</button>
+            <button class="tool-button" onclick="setTool('select')" id="selectTool">🔲 框選</button>
+            <button class="tool-button" onclick="setTool('fill')" id="fillTool">🪣 填充</button>
+        </div>
+
+        <div class="control-group">
+            <label>填充值:</label>
+            <input type="number" id="fillValue" value="1" min="0" max="255">
+        </div>
+
+        <div class="control-group">
+            <button onclick="fillSelection()" id="fillSelectionBtn" disabled>📦 填充選區</button>
+            <button onclick="clearSelection()" id="clearSelectionBtn" disabled>❌ 清除選區</button>
+        </div>
+
+        <div class="control-group">
+            <label>顯示大小:</label>
+            <button onclick="setViewSize(128)">128</button>
+            <button onclick="setViewSize(256)">256</button>
+            <button onclick="setViewSize(512)">512</button>
+            <button onclick="setViewSize(1024)">1024</button>
+            <button onclick="setViewSize(2048)">2048</button>
+            <span id="viewSize">128x128</span>
+        </div>
+
+        <div id="stats">
+            地圖大小: <span id="mapSize">0x0</span>
+        </div>
+    </div>
+
+    <div id="container">
+        <div id="canvasContainer">
+            <canvas id="mapCanvas"></canvas>
+            <canvas id="selectionCanvas"></canvas>
+            
+            <div id="pageInfo">
+                顯示範圍: X(0-128) Y(0-128)
+            </div>
+            
+            <div id="pageControls">
+                <div class="page-nav">
+                    <button onclick="changePage(-1, 0)">⬅️</button>
+                    <span>頁 X: <span id="pageX">1</span>/<span id="totalPagesX">1</span></span>
+                    <button onclick="changePage(1, 0)">➡️</button>
+                </div>
+                <div class="page-nav">
+                    <button onclick="changePage(0, -1)">⬆️</button>
+                    <span>頁 Y: <span id="pageY">1</span>/<span id="totalPagesY">1</span></span>
+                    <button onclick="changePage(0, 1)">⬇️</button>
+                </div>
+            </div>
+
+            <canvas id="miniMapCanvas"></canvas>
+            
+            <div id="coordinateInfo">X: 0, Y: 0</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mapCanvas');
+        const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
+        const selectionCanvas = document.getElementById('selectionCanvas');
+        const selectionCtx = selectionCanvas.getContext('2d');
+        const miniCanvas = document.getElementById('miniMapCanvas');
+        const miniCtx = miniCanvas.getContext('2d', { alpha: false });
+
+        let mapData = [];
+        let mapWidth = 0;
+        let mapHeight = 0;
+        let currentTool = 'pen';
+        let isDrawing = false;
+        let pixelSize = 4; // 每個地圖格子的顯示像素大小
+        let viewSize = 128; // 視窗顯示的地圖格子數量
+        
+        // 分頁相關
+        const PAGE_SIZE = 128;
+        let currentPageX = 0;
+        let currentPageY = 0;
+        let totalPagesX = 1;
+        let totalPagesY = 1;
+
+        // 框選相關
+        let selectionStart = null;
+        let selectionEnd = null;
+        let selectedRegion = null;
+
+        // 顏色映射 (優化版 - 使用緩存)
+        const colorCache = new Map();
+        function getColor(value) {
+            if (colorCache.has(value)) return colorCache.get(value);
+            
+            let color;
+            if (value === 0) color = '#ffffff';
+            else if (value === 1) color = '#000000';
+            else if (value <= 50) color = '#8B4513';
+            else if (value <= 100) color = '#228B22';
+            else if (value <= 150) color = '#4169E1';
+            else if (value <= 200) color = '#FFD700';
+            else color = '#FF0000';
+            
+            colorCache.set(value, color);
+            return color;
+        }
+
+        // 設置工具
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tool + 'Tool').classList.add('active');
+            
+            if (tool !== 'select') {
+                clearSelection();
+            }
+        }
+
+        // 設置視窗大小
+        function setViewSize(size) {
+            viewSize = size;
+            pixelSize = Math.max(1, Math.floor(512 / size)); // 根據視窗大小調整像素大小
+            document.getElementById('viewSize').textContent = `${size}x${size}`;
+            if (mapData.length > 0) {
+                renderFullMap();
+                renderMiniMap();
+            }
+        }
+
+        // 載入地圖檔案 (支持 CSV 和 TXT)
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const content = event.target.result;
+                parseMapFile(content);
+            };
+            reader.readAsText(file);
+        });
+
+        function parseMapFile(content) {
+            const lines = content.trim().split('\n');
+            mapHeight = lines.length;
+            
+            // 檢測分隔符 (支持逗號、空格、制表符)
+            let delimiter = ',';
+            if (lines[0].includes('\t')) {
+                delimiter = '\t';
+            } else if (lines[0].includes(' ') && !lines[0].includes(',')) {
+                delimiter = ' ';
+            }
+            
+            mapWidth = lines[0].split(delimiter).filter(v => v.trim()).length;
+            mapData = new Uint8Array(mapWidth * mapHeight);
+            
+            for (let y = 0; y < mapHeight; y++) {
+                const values = lines[y].split(delimiter).filter(v => v.trim());
+                for (let x = 0; x < mapWidth && x < values.length; x++) {
+                    mapData[y * mapWidth + x] = parseInt(values[x]) || 0;
+                }
+            }
+
+            // 計算總頁數
+            totalPagesX = Math.ceil(mapWidth / PAGE_SIZE);
+            totalPagesY = Math.ceil(mapHeight / PAGE_SIZE);
+            currentPageX = 0;
+            currentPageY = 0;
+
+            updateStats();
+            renderFullMap();
+            renderMiniMap();
+            updatePageInfo();
+        }
+
+        function updateStats() {
+            document.getElementById('mapSize').textContent = `${mapWidth}x${mapHeight}`;
+        }
+
+        // 渲染完整地圖 (優化版)
+        let offscreenCanvas = null;
+        let offscreenCtx = null;
+
+        function renderFullMap() {
+            const displayWidth = viewSize * pixelSize;
+            const displayHeight = viewSize * pixelSize;
+            
+            canvas.width = Math.min(mapWidth, viewSize) * pixelSize;
+            canvas.height = Math.min(mapHeight, viewSize) * pixelSize;
+            selectionCanvas.width = canvas.width;
+            selectionCanvas.height = canvas.height;
+
+            // 使用離屏canvas提升性能
+            if (!offscreenCanvas || offscreenCanvas.width !== mapWidth || offscreenCanvas.height !== mapHeight) {
+                offscreenCanvas = document.createElement('canvas');
+                offscreenCanvas.width = mapWidth;
+                offscreenCanvas.height = mapHeight;
+                offscreenCtx = offscreenCanvas.getContext('2d', { alpha: false });
+            }
+
+            const imageData = offscreenCtx.createImageData(mapWidth, mapHeight);
+            const data = imageData.data;
+
+            // 批量處理像素
+            for (let i = 0; i < mapData.length; i++) {
+                const value = mapData[i];
+                const color = getColor(value);
+                const rgb = hexToRgb(color);
+                
+                const idx = i * 4;
+                data[idx] = rgb.r;
+                data[idx + 1] = rgb.g;
+                data[idx + 2] = rgb.b;
+                data[idx + 3] = 255;
+            }
+
+            offscreenCtx.putImageData(imageData, 0, 0);
+            
+            // 縮放渲染
+            ctx.imageSmoothingEnabled = false;
+            const renderWidth = Math.min(mapWidth, viewSize);
+            const renderHeight = Math.min(mapHeight, viewSize);
+            ctx.drawImage(
+                offscreenCanvas, 
+                0, 0, renderWidth, renderHeight,
+                0, 0, renderWidth * pixelSize, renderHeight * pixelSize
+            );
+
+            // 重繪選區
+            if (selectedRegion) {
+                drawSelection();
+            }
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : {r: 0, g: 0, b: 0};
+        }
+
+        // 渲染小地圖 (分頁版本 - 顯示在右下角)
+        function renderMiniMap() {
+            const miniSize = 256; // 小地圖固定大小
+            miniCanvas.width = miniSize;
+            miniCanvas.height = miniSize;
+
+            const startX = currentPageX * PAGE_SIZE;
+            const startY = currentPageY * PAGE_SIZE;
+            const endX = Math.min(startX + PAGE_SIZE, mapWidth);
+            const endY = Math.min(startY + PAGE_SIZE, mapHeight);
+            
+            const viewWidth = endX - startX;
+            const viewHeight = endY - startY;
+
+            const imageData = miniCtx.createImageData(viewWidth, viewHeight);
+            const data = imageData.data;
+
+            for (let y = 0; y < viewHeight; y++) {
+                for (let x = 0; x < viewWidth; x++) {
+                    const mapX = startX + x;
+                    const mapY = startY + y;
+                    const value = mapData[mapY * mapWidth + mapX];
+                    const color = getColor(value);
+                    const rgb = hexToRgb(color);
+                    
+                    const idx = (y * viewWidth + x) * 4;
+                    data[idx] = rgb.r;
+                    data[idx + 1] = rgb.g;
+                    data[idx + 2] = rgb.b;
+                    data[idx + 3] = 255;
+                }
+            }
+
+            miniCtx.putImageData(imageData, 0, 0);
+            miniCtx.imageSmoothingEnabled = false;
+            
+            // 計算縮放比例以適應小地圖
+            const scale = Math.min(miniSize / viewWidth, miniSize / viewHeight);
+            const scaledWidth = viewWidth * scale;
+            const scaledHeight = viewHeight * scale;
+            
+            miniCtx.clearRect(0, 0, miniSize, miniSize);
+            miniCtx.drawImage(
+                miniCanvas, 0, 0, viewWidth, viewHeight,
+                0, 0, scaledWidth, scaledHeight
+            );
+        }
+
+        // 分頁控制
+        function changePage(dx, dy) {
+            currentPageX = Math.max(0, Math.min(totalPagesX - 1, currentPageX + dx));
+            currentPageY = Math.max(0, Math.min(totalPagesY - 1, currentPageY + dy));
+            renderMiniMap();
+            updatePageInfo();
+        }
+
+        function updatePageInfo() {
+            const startX = currentPageX * PAGE_SIZE;
+            const startY = currentPageY * PAGE_SIZE;
+            const endX = Math.min(startX + PAGE_SIZE, mapWidth);
+            const endY = Math.min(startY + PAGE_SIZE, mapHeight);
+
+            document.getElementById('pageInfo').textContent = 
+                `顯示範圍: X(${startX}-${endX}) Y(${startY}-${endY})`;
+            document.getElementById('pageX').textContent = currentPageX + 1;
+            document.getElementById('pageY').textContent = currentPageY + 1;
+            document.getElementById('totalPagesX').textContent = totalPagesX;
+            document.getElementById('totalPagesY').textContent = totalPagesY;
+        }
+
+        // 繪圖事件
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            handleMouseDown(e);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            updateCoordinateInfo(e);
+            if (isDrawing) {
+                handleMouseMove(e);
+            }
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            handleMouseUp(e);
+            isDrawing = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+        });
+
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / pixelSize);
+            const y = Math.floor((e.clientY - rect.top) / pixelSize);
+            return { x, y };
+        }
+
+        function handleMouseDown(e) {
+            const { x, y } = getCanvasCoords(e);
+            
+            if (currentTool === 'select') {
+                selectionStart = { x, y };
+                selectionEnd = { x, y };
+            } else if (currentTool === 'pen') {
+                drawPixel(x, y);
+            } else if (currentTool === 'fill') {
+                floodFill(x, y);
+            }
+        }
+
+        function handleMouseMove(e) {
+            const { x, y } = getCanvasCoords(e);
+            
+            if (currentTool === 'select' && selectionStart) {
+                selectionEnd = { x, y };
+                drawSelection();
+            } else if (currentTool === 'pen') {
+                drawPixel(x, y);
+            }
+        }
+
+        function handleMouseUp(e) {
+            if (currentTool === 'select' && selectionStart && selectionEnd) {
+                const minX = Math.min(selectionStart.x, selectionEnd.x);
+                const maxX = Math.max(selectionStart.x, selectionEnd.x);
+                const minY = Math.min(selectionStart.y, selectionEnd.y);
+                const maxY = Math.max(selectionStart.y, selectionEnd.y);
+                
+                selectedRegion = { minX, maxX, minY, maxY };
+                document.getElementById('fillSelectionBtn').disabled = false;
+                document.getElementById('clearSelectionBtn').disabled = false;
+            }
+        }
+
+        function drawSelection() {
+            if (!selectionStart || !selectionEnd) return;
+            
+            selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+            
+            const minX = Math.min(selectionStart.x, selectionEnd.x);
+            const maxX = Math.max(selectionStart.x, selectionEnd.x);
+            const minY = Math.min(selectionStart.y, selectionEnd.y);
+            const maxY = Math.max(selectionStart.y, selectionEnd.y);
+            
+            selectionCtx.strokeStyle = '#00ff00';
+            selectionCtx.lineWidth = 2;
+            selectionCtx.setLineDash([5, 5]);
+            selectionCtx.strokeRect(
+                minX * pixelSize,
+                minY * pixelSize,
+                (maxX - minX + 1) * pixelSize,
+                (maxY - minY + 1) * pixelSize
+            );
+        }
+
+        function fillSelection() {
+            if (!selectedRegion) return;
+            
+            const fillValue = parseInt(document.getElementById('fillValue').value);
+            const { minX, maxX, minY, maxY } = selectedRegion;
+            
+            for (let y = minY; y <= maxY; y++) {
+                for (let x = minX; x <= maxX; x++) {
+                    if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
+                        mapData[y * mapWidth + x] = fillValue;
+                    }
+                }
+            }
+            
+            renderFullMap();
+            renderMiniMap();
+        }
+
+        function clearSelection() {
+            selectionStart = null;
+            selectionEnd = null;
+            selectedRegion = null;
+            selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+            document.getElementById('fillSelectionBtn').disabled = true;
+            document.getElementById('clearSelectionBtn').disabled = true;
+        }
+
+        function drawPixel(x, y) {
+            if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) return;
+            
+            const fillValue = parseInt(document.getElementById('fillValue').value);
+            mapData[y * mapWidth + x] = fillValue;
+            
+            // 只重繪改變的像素
+            ctx.fillStyle = getColor(fillValue);
+            ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+            
+            // 更新小地圖 (如果在當前頁面內)
+            const pageStartX = currentPageX * PAGE_SIZE;
+            const pageStartY = currentPageY * PAGE_SIZE;
+            if (x >= pageStartX && x < pageStartX + PAGE_SIZE &&
+                y >= pageStartY && y < pageStartY + PAGE_SIZE) {
+                renderMiniMap();
+            }
+        }
+
+        function floodFill(startX, startY) {
+            const fillValue = parseInt(document.getElementById('fillValue').value);
+            const targetValue = mapData[startY * mapWidth + startX];
+            
+            if (targetValue === fillValue) return;
+
+            const stack = [{x: startX, y: startY}];
+            const visited = new Set();
+
+            while (stack.length > 0) {
+                const {x, y} = stack.pop();
+                const key = `${x},${y}`;
+                
+                if (visited.has(key)) continue;
+                if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) continue;
+                if (mapData[y * mapWidth + x] !== targetValue) continue;
+
+                visited.add(key);
+                mapData[y * mapWidth + x] = fillValue;
+
+                stack.push({x: x + 1, y});
+                stack.push({x: x - 1, y});
+                stack.push({x, y: y + 1});
+                stack.push({x, y: y - 1});
+            }
+
+            renderFullMap();
+            renderMiniMap();
+        }
+
+        function updateCoordinateInfo(e) {
+            const { x, y } = getCanvasCoords(e);
+            if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
+                document.getElementById('coordinateInfo').textContent = 
+                    `X: ${x}, Y: ${y} | 值: ${mapData[y * mapWidth + x] || 0}`;
+            }
+        }
+
+        // 儲存CSV
+        function saveCSV() {
+            if (mapData.length === 0) {
+                alert('沒有地圖資料可以儲存');
+                return;
+            }
+
+            let csv = '';
+            for (let y = 0; y < mapHeight; y++) {
+                const row = [];
+                for (let x = 0; x < mapWidth; x++) {
+                    row.push(mapData[y * mapWidth + x]);
+                }
+                csv += row.join(',') + '\n';
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'map_edited.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
