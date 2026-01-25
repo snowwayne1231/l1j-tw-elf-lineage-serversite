@@ -2968,4 +2968,8 @@
 	<Action Name="teleport town-in" NpcId="71016">
 		<Teleport X="32834" Y="32791" Map="8011" Heading="4" Price="0" />
 	</Action>
+	<!-- 王族 45 試煉 -->
+	<Action Name="0" NpcId="71200">
+		<Teleport X="32690" Y="32812" Map="82" Heading="4" Price="0" />
+	</Action>
 </NpcActionList>
